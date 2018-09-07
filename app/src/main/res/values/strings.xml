@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">winnerNumber</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <string-array name="fixDay">
+        <item>每天</item>
+        <item>每周</item>
+        <item>每月</item>
+        <item>每年</item>
+    </string-array>
+</resources>

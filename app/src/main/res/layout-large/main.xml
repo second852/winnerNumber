@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/topLayout"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:keepScreenOn="true">
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:id="@+id/answer"
+      android:background="#ffffff"
+      android:textColor="#000000"
+      android:gravity="center"
+      android:textSize="40sp"
+      android:text="中獎資訊"
+      android:visibility="visible"
+      />
+  <com.chargeapp.whc.chargeapp.ui.CameraSourcePreview
+      android:id="@+id/preview"
+      android:layout_below="@+id/answer"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+    <com.chargeapp.whc.chargeapp.ui.GraphicOverlay
+        android:id="@+id/faceOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+  </com.chargeapp.whc.chargeapp.ui.CameraSourcePreview>
+
+
+
+  <com.beardedhen.androidbootstrap.BootstrapButton
+      android:id="@+id/backP"
+      android:layout_alignParentBottom="true"
+      android:layout_centerHorizontal="true"
+      android:layout_marginBottom="20dp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:layout_marginTop="10dp"
+      app:bootstrapSize="xl"
+      app:bootstrapBrand="danger"
+      app:bootstrapText="返回 {fa_reply_all}"
+      />
+
+</RelativeLayout>
