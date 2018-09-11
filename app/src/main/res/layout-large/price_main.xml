@@ -1,69 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
+    android:background="#f5f5f5"
     >
-    <HorizontalScrollView
-        android:id="@+id/choiceitem"
+    <com.ogaclejapan.smarttablayout.SmartTabLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@id/viewpagertab"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="48dp"
+        android:clipToPadding="false"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
         android:background="#000000"
-        >
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/text"
-            android:layout_marginLeft="-140dp"
-            >
-            <Button
-                android:id="@+id/goneD"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/exportD"
-                android:background="#000000"
-                android:textColor="#ffffff"
-                android:textSize="25sp"
-                android:text="兌獎號碼"
-                android:visibility="visible"
-                />
-            <Button
-                android:id="@+id/exportD"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:background="#f5f5f5"
-                android:textColor="#000000"
-                android:textSize="25sp"
-                android:text="中獎發票" />
-            <Button
-                android:id="@+id/showD"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/exportD"
-                android:background="#000000"
-                android:textColor="#ffffff"
-                android:textSize="25sp"
-                android:text="兌獎" />
-            <Button
-                android:id="@+id/showN"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/exportD"
-                android:background="#000000"
-                android:textColor="#ffffff"
-                android:textSize="25sp"
-                android:text="兌獎號碼" />
-        </LinearLayout>
-    </HorizontalScrollView>
+        app:stl_defaultTabTextColor="@color/move_color"
+        app:stl_defaultTabTextHorizontalPadding="18dp"
+        app:stl_dividerColor="#00000000"
+        app:stl_dividerThickness="0dp"
+        app:stl_indicatorColor="#ffffff"
+        app:stl_indicatorCornerRadius="18dp"
+        app:stl_indicatorGravity="center"
+        app:stl_indicatorInterpolation="smart"
+        app:stl_indicatorThickness="36dp"
+        app:stl_underlineColor="#00000000"
+        app:stl_defaultTabTextSize="30sp"
+        app:stl_underlineThickness="0dp"
+        />
     <android.support.v4.view.ViewPager
         android:id="@+id/priceViewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/choiceitem"
+        android:layout_below="@+id/viewpagertab"
         >
     </android.support.v4.view.ViewPager>
 </RelativeLayout>

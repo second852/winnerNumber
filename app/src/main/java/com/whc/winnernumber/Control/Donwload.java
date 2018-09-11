@@ -2,12 +2,15 @@ package com.whc.winnernumber.Control;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,7 +89,6 @@ public class Donwload extends Fragment {
     private Runnable downloadData = new Runnable() {
         @Override
         public void run() {
-            priceDB.deleteAll();
             if (priceDB.getAll().size() <= 0) {
                 searchAllPrice();
             } else {
@@ -98,16 +100,20 @@ public class Donwload extends Fragment {
                 int maxYear = new Integer(maxPeriod.substring(0, maxPeriod.length() - 2)) + 1911;
                 int maXMonth = new Integer(maxPeriod.substring(maxPeriod.length() - 2));
                 int differentMonth = (year - maxYear) * 12 + (month - maXMonth);
-                Log.d("XXXXx", differentMonth + "");
                 if (differentMonth >= 6) {
                     searchAllPrice();
                 } else {
                     if (differentMonth < 2) {
-                        toNewFragment();
+                        Message message = new Message();
+                        message.what = 2;
+                        handler.sendMessage(message);
+
                         return;
                     } else if (differentMonth == 2) {
                         if (day < 25) {
-                            toNewFragment();
+                            Message message = new Message();
+                            message.what = 2;
+                            handler.sendMessage(message);
                             return;
                         }
                     }
@@ -166,6 +172,7 @@ public class Donwload extends Fragment {
                     }
                     Message message = new Message();
                     message.what = 2;
+                    handler.sendMessage(message);
                 }
             }
         }
@@ -174,6 +181,7 @@ public class Donwload extends Fragment {
 
     private void toNewFragment() {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right);
         fragmentTransaction.replace(R.id.body, new PriceActivity());
         fragmentTransaction.commit();
     }

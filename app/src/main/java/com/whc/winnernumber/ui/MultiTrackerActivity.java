@@ -71,7 +71,6 @@ public final class MultiTrackerActivity extends AppCompatActivity {
     public static String oldElu,p;
     public static boolean isold;
     public static int colorChange;
-    public static String action;
     public RelativeLayout buttonR;
     public BootstrapButton search,back,backP;
     /**
@@ -89,24 +88,15 @@ public final class MultiTrackerActivity extends AppCompatActivity {
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
         backP= (BootstrapButton) findViewById(R.id.backP);
-
-            try {
-                action=getIntent().getStringExtra("action");
-            }catch (Exception e)
-            {
-                action=" ";
-            }
             backP.setVisibility(View.VISIBLE);
             backP.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(MultiTrackerActivity.this,MainActivity.class);
-                    intent.putExtra("action",MultiTrackerActivity.action);
                     MultiTrackerActivity.this.setResult(0,intent);
                     MultiTrackerActivity.this.finish();
                 }
             });
-            buttonR.setVisibility(View.GONE);
             answer.setVisibility(View.VISIBLE);
 
         // Check for the camera permission before accessing the camera.  If the
@@ -203,39 +193,7 @@ public final class MultiTrackerActivity extends AppCompatActivity {
                 .build();
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode== KeyEvent.KEYCODE_BACK)
-        {
-            if(action.equals("setConsume"))
-            {
-                Intent intent = new Intent(MultiTrackerActivity.this,MainActivity.class);
-                intent.putExtra("action",MultiTrackerActivity.action);
-                MultiTrackerActivity.this.setResult(0,intent);
-                MultiTrackerActivity.this.finish();
-            }else if(action.equals("UpdateSpend")){
-                Intent intent = new Intent(MultiTrackerActivity.this,MainActivity.class);
-                intent.putExtra("action",MultiTrackerActivity.action);
-                intent.putExtra("bundle",getIntent().getBundleExtra("bundle"));
-                MultiTrackerActivity.this.setResult(0,intent);
-                MultiTrackerActivity.this.finish();
-            }else if(action.equals("PriceHand"))
-            {
-                Intent intent = new Intent(MultiTrackerActivity.this,MainActivity.class);
-                intent.putExtra("action",MultiTrackerActivity.action);
-                MultiTrackerActivity.this.setResult(0,intent);
-                MultiTrackerActivity.this.finish();
-            }
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-
-    }
 
     /**
      * Restarts the camera.
@@ -319,26 +277,9 @@ public final class MultiTrackerActivity extends AppCompatActivity {
 
         DialogInterface.OnClickListener nolistener = new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                if(action.equals("setConsume"))
-                {
-                    Intent intent = new Intent(MultiTrackerActivity.this,MainActivity.class);
-                    intent.putExtra("action",MultiTrackerActivity.action);
-                    MultiTrackerActivity.this.setResult(0,intent);
-                    MultiTrackerActivity.this.finish();
-                }else if(action.equals("UpdateSpend")){
-                    Intent intent = new Intent(MultiTrackerActivity.this,MainActivity.class);
-                    intent.putExtra("action",MultiTrackerActivity.action);
-                    intent.putExtra("bundle",getIntent().getBundleExtra("bundle"));
-                    MultiTrackerActivity.this.setResult(0,intent);
-                    MultiTrackerActivity.this.finish();
-                }else if(action.equals("PriceHand"))
-                {
-                    Intent intent = new Intent(MultiTrackerActivity.this,MainActivity.class);
-                    intent.putExtra("action",MultiTrackerActivity.action);
-                    MultiTrackerActivity.this.setResult(0,intent);
-                    MultiTrackerActivity.this.finish();
-                }
-            }
+                Intent intent = new Intent(MultiTrackerActivity.this,MainActivity.class);
+                MultiTrackerActivity.this.setResult(0,intent);
+                MultiTrackerActivity.this.finish();}
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("無法使用相機!")
@@ -379,25 +320,9 @@ public final class MultiTrackerActivity extends AppCompatActivity {
 
             DialogInterface.OnClickListener nolistener = new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    if(action.equals("setConsume"))
-                    {
-                        Intent intent = new Intent(MultiTrackerActivity.this,MainActivity.class);
-                        intent.putExtra("action",MultiTrackerActivity.action);
-                        MultiTrackerActivity.this.setResult(0,intent);
-                        MultiTrackerActivity.this.finish();
-                    }else if(action.equals("UpdateSpend")){
-                        Intent intent = new Intent(MultiTrackerActivity.this,MainActivity.class);
-                        intent.putExtra("action",MultiTrackerActivity.action);
-                        intent.putExtra("bundle",getIntent().getBundleExtra("bundle"));
-                        MultiTrackerActivity.this.setResult(0,intent);
-                        MultiTrackerActivity.this.finish();
-                    }else if(action.equals("PriceHand"))
-                    {
-                        Intent intent = new Intent(MultiTrackerActivity.this,MainActivity.class);
-                        intent.putExtra("action",MultiTrackerActivity.action);
-                        MultiTrackerActivity.this.setResult(0,intent);
-                        MultiTrackerActivity.this.finish();
-                    }
+                    Intent intent = new Intent(MultiTrackerActivity.this,MainActivity.class);
+                    MultiTrackerActivity.this.setResult(0,intent);
+                    MultiTrackerActivity.this.finish();
                 }
             };
 

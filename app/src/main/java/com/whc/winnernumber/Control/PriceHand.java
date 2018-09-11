@@ -45,6 +45,7 @@ import com.whc.winnernumber.DataBase.PriceDB;
 import com.whc.winnernumber.DataBase.WinnerDB;
 import com.whc.winnernumber.R;
 import com.whc.winnernumber.model.PriceVO;
+import com.whc.winnernumber.ui.MultiTrackerActivity;
 
 
 import java.util.ArrayList;
@@ -113,7 +114,6 @@ public class PriceHand extends Fragment {
         findViewById(view);
         String period = priceDB.findMaxPeriod();
         if (period == null) {
-//            cardview.setVisibility(View.GONE);
             priceTitle.setVisibility(View.GONE);
             showRemain.setVisibility(View.VISIBLE);
             modelR.setVisibility(View.GONE);
@@ -464,9 +464,13 @@ public class PriceHand extends Fragment {
         choiceModel.setOnDropDownItemClickListener(new BootstrapDropDown.OnDropDownItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View v, int i) {
-                position=i;
-                choiceModel.setBootstrapText(bootstrapTexts.get(i));
-                choiceModel.setShowOutline(false);
+                if(i!=2)
+                {
+                    position=i;
+                    choiceModel.setBootstrapText(bootstrapTexts.get(i));
+                    choiceModel.setShowOutline(false);
+                }
+
                 if (i == 0) {
 
                     setOneActon();
@@ -565,10 +569,9 @@ public class PriceHand extends Fragment {
         }
 
         Common.showToast(context, "載入資料中");
-//        MultiTrackerActivity.refresh = false;
-//        Intent intent = new Intent(context, MultiTrackerActivity.class);
-//        intent.putExtra("action", "PriceHand");
-//        startActivityForResult(intent, 6);
+        Intent intent = new Intent(context, MultiTrackerActivity.class);
+        intent.putExtra("action", "PriceHand");
+        startActivityForResult(intent, 6);
     }
 
     private void setTwoActon() {

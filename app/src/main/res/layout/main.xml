@@ -20,18 +20,17 @@
       android:text="中獎資訊"
       android:visibility="gone"
       />
-  <com.chargeapp.whc.chargeapp.ui.CameraSourcePreview
+  <com.whc.winnernumber.ui.CameraSourcePreview
       android:id="@+id/preview"
       android:layout_below="@+id/answer"
-      android:layout_above="@+id/buttonR"
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
-    <com.chargeapp.whc.chargeapp.ui.GraphicOverlay
+    <com.whc.winnernumber.ui.GraphicOverlay
         android:id="@+id/faceOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-  </com.chargeapp.whc.chargeapp.ui.CameraSourcePreview>
+  </com.whc.winnernumber.ui.CameraSourcePreview>
 
     <com.beardedhen.androidbootstrap.BootstrapButton
         android:id="@+id/backP"

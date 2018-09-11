@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         TypefaceProvider.registerDefaultIconSets();
         setContentView(R.layout.activity_main);
+        getSupportActionBar().hide();
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
