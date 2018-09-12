@@ -3,8 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.whc.winnernumber.Control.MainActivity">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:id="@+id/showAd"
+        android:title="@string/action_showAd"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/closed"
+        android:title="@string/action_close"
         app:showAsAction="never" />
 </menu>

@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.whc.winnernumber.model.PriceVO;
+import com.whc.winnernumber.Model.PriceVO;
 
 import java.util.ArrayList;
 import java.util.List;

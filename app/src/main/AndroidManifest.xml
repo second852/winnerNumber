@@ -46,5 +46,8 @@
             android:theme="@android:style/Theme.Translucent"
             />
     </application>
+    <meta-data
+        android:name="com.google.android.gms.ads.APPLICATION_ID"
+        android:value="ca-app-pub-5169620543343332~7918448977"/>
 
 </manifest>

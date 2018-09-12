@@ -44,7 +44,7 @@ import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.whc.winnernumber.DataBase.PriceDB;
 import com.whc.winnernumber.DataBase.WinnerDB;
 import com.whc.winnernumber.R;
-import com.whc.winnernumber.model.PriceVO;
+import com.whc.winnernumber.Model.PriceVO;
 import com.whc.winnernumber.ui.MultiTrackerActivity;
 
 

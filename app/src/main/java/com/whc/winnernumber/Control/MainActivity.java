@@ -3,19 +3,15 @@ package com.whc.winnernumber.Control;
 
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-
-
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+
 
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.whc.winnernumber.R;
 
 public class MainActivity extends AppCompatActivity {
+
 
 
     @Override
@@ -30,6 +26,4 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.body, new Donwload());
         fragmentTransaction.commit();
     }
-
-
 }

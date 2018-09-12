@@ -37,6 +37,7 @@ import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.TypefaceProvider;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
@@ -61,7 +62,6 @@ public final class MultiTrackerActivity extends AppCompatActivity {
     private static final int RC_HANDLE_GMS = 9001;
     // permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
-    public static boolean refresh;
     private CameraSource mCameraSource = null;
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
@@ -71,8 +71,8 @@ public final class MultiTrackerActivity extends AppCompatActivity {
     public static String oldElu,p;
     public static boolean isold;
     public static int colorChange;
-    public RelativeLayout buttonR;
-    public BootstrapButton search,back,backP;
+    public BootstrapButton backP;
+    public AdView adView;
     /**
      * Initializes the UI and creates the detector pipeline.
      */
@@ -83,7 +83,10 @@ public final class MultiTrackerActivity extends AppCompatActivity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         TypefaceProvider.registerDefaultIconSets();
+        getSupportActionBar().hide();
         setContentView(R.layout.main);
+        adView= (AdView) findViewById(R.id.adView);
+        Common.setAdView(adView,this);
         answer= (TextView) findViewById(R.id.answer);
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);

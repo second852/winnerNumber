@@ -18,7 +18,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.whc.winnernumber.model.PriceVO;
+import com.whc.winnernumber.Model.PriceVO;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -133,7 +133,7 @@ public class Common {
     public static void setAdView(final AdView adView, Context activity)
     {
         try {
-            MobileAds.initialize(activity, "ca-app-pub-5169620543343332~2865524734");
+            MobileAds.initialize(activity, "ca-app-pub-5169620543343332~7918448977");
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
             adView.setAdListener(new AdListener() {

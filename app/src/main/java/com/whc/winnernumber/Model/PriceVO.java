@@ -1,4 +1,4 @@
-package com.whc.winnernumber.model;
+package com.whc.winnernumber.Model;
 
 /**
  * Created by Wang on 2018/1/7.

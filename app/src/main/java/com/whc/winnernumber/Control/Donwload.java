@@ -2,15 +2,12 @@ package com.whc.winnernumber.Control;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.transition.Fade;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +20,7 @@ import com.google.gson.JsonObject;
 import com.whc.winnernumber.DataBase.PriceDB;
 import com.whc.winnernumber.DataBase.WinnerDB;
 import com.whc.winnernumber.R;
-import com.whc.winnernumber.model.PriceVO;
+import com.whc.winnernumber.Model.PriceVO;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

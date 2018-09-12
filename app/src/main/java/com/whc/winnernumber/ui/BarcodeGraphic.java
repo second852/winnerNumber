@@ -16,26 +16,20 @@
 package com.whc.winnernumber.ui;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 
 
 import com.google.android.gms.vision.barcode.Barcode;
 import com.whc.winnernumber.DataBase.PriceDB;
 import com.whc.winnernumber.DataBase.WinnerDB;
-import com.whc.winnernumber.model.PriceVO;
+import com.whc.winnernumber.Model.PriceVO;
 
 import java.util.HashMap;
 
@@ -266,9 +260,6 @@ public class BarcodeGraphic extends TrackedGraphic<Barcode> {
             rect.right = translateX(rect.right);
             rect.bottom = translateY(rect.bottom);
             canvas.drawRect(rect, mRectPaint);
-        }
-        if (MultiTrackerActivity.refresh) {
-            return;
         }
         if (MultiTrackerActivity.result == null) {
             MultiTrackerActivity.answer.setText("請對準左邊QRCode~");
