@@ -3,12 +3,16 @@ package com.whc.winnernumber.Control;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.util.Log;
@@ -37,6 +41,8 @@ import com.whc.winnernumber.R;
 
 import java.util.HashMap;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 
 public class PriceActivity extends Fragment {
     private ViewPager priceViewPager;
@@ -44,7 +50,7 @@ public class PriceActivity extends Fragment {
     private AdView adView;
     private ImageView menu;
     private RewardedVideoAd mRewardedVideoAd;
-
+    private NotificationManager notificationManager;
 
 
 
@@ -111,6 +117,11 @@ public class PriceActivity extends Fragment {
         return view;
     }
 
+
+
+
+
+    //廣告設定
     private void loadRewardedVideoAd() {
         mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",new AdRequest.Builder().build());
     }
