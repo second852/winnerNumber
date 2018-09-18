@@ -42,19 +42,19 @@ public class MainActivity extends AppCompatActivity {
     {
 
         //判斷是否建立過
-//        boolean hasBeenScheduled=false;
-//        for (JobInfo jobInfo : tm.getAllPendingJobs()) {
-//            if (jobInfo.getId() == 0) {
-//                hasBeenScheduled = true;
-//                break;
-//            }
-//        }
-//        if(hasBeenScheduled)
-//        {
-//            return;
-//        }
         JobScheduler tm = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        tm.cancel(0);
+        boolean hasBeenScheduled=false;
+        for (JobInfo jobInfo : tm.getAllPendingJobs()) {
+            if (jobInfo.getId() == 0) {
+                hasBeenScheduled = true;
+                break;
+            }
+        }
+        if(hasBeenScheduled)
+        {
+            return;
+        }
+
         ComponentName mServiceComponent = new ComponentName(this, BootReceiverJob.class);
         JobInfo.Builder builder = new JobInfo.Builder(0, mServiceComponent);
         builder.setPeriodic(0);

@@ -101,7 +101,7 @@ public final class MultiTrackerActivity extends AppCompatActivity {
                 }
             });
             answer.setVisibility(View.VISIBLE);
-
+        MultiTrackerActivity.oldElu=null;
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);

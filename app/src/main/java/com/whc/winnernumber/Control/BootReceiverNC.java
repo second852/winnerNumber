@@ -4,12 +4,14 @@ package com.whc.winnernumber.Control;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 
 
 import com.whc.winnernumber.R;
@@ -54,12 +56,19 @@ public class BootReceiverNC extends BroadcastReceiver {
         {
             channel(context);
         }
-        Notification.Builder nb = new Notification.Builder(context.getApplicationContext(),PRIMARY_CHANNEL)
+        Intent notifyIntent = new Intent(context, MainActivity.class);
+        notifyIntent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent appIntent = PendingIntent.getActivity(context, 0, notifyIntent, 0);
+        long[] vibrate = {0,100,200,300};
+        Notification nb = new Notification.Builder(context.getApplicationContext(),PRIMARY_CHANNEL)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setSmallIcon(R.drawable.start)
-                .setAutoCancel(true);
-        manager.notify(0, nb.build());
+                .setAutoCancel(true).setWhen(System.currentTimeMillis()).setVibrate(vibrate)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setContentIntent(appIntent).build();
+        nb.flags = Notification.FLAG_SHOW_LIGHTS;
+        manager.notify(0, nb);
     }
 
 

@@ -24,6 +24,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 
 
 import com.google.android.gms.vision.barcode.Barcode;
@@ -121,6 +122,7 @@ public class BarcodeGraphic extends TrackedGraphic<Barcode> {
      */
     void updateItem(Barcode barcode) {
         mBarcode = barcode;
+        Log.d("XXXXXX",barcode.rawValue);
         if (barcode == null) {
             postInvalidate();
             return;

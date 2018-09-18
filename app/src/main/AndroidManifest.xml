@@ -54,6 +54,7 @@
         </receiver>
         <receiver android:name=".Control.BootReceiverNN" />
         <receiver android:name=".Control.BootReceiverNC" />
+
         <service
             android:name=".Control.BootReceiverJob"
             android:permission="android.permission.BIND_JOB_SERVICE" />
