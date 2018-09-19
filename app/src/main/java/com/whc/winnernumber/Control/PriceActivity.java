@@ -26,6 +26,7 @@ import android.widget.PopupMenu;
 
 import com.ToxicBakery.viewpager.transforms.CubeOutTransformer;
 import com.ToxicBakery.viewpager.transforms.RotateUpTransformer;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
@@ -49,8 +50,7 @@ public class PriceActivity extends Fragment {
     private Activity context;
     private AdView adView;
     private ImageView menu;
-    private RewardedVideoAd mRewardedVideoAd;
-    private NotificationManager notificationManager;
+    private InterstitialAd mInterstitialAd;
 
 
 
@@ -86,10 +86,11 @@ public class PriceActivity extends Fragment {
         //set 廣告
         adView = (AdView) view.findViewById(R.id.adView);
         Common.setAdView(adView, context);
-        //獎勵式廣告
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(context);
-        mRewardedVideoAd.setRewardedVideoAdListener(new showAds());
-        loadRewardedVideoAd();
+        //差頁式廣告
+        mInterstitialAd = new InterstitialAd(context);
+        mInterstitialAd.setAdUnitId("ca-app-pub-5169620543343332/9437906246");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.setAdListener(new adListener());
         //menu
         menu= (ImageView) view.findViewById(R.id.menu);
         menu.setOnClickListener(new View.OnClickListener() {
@@ -102,7 +103,11 @@ public class PriceActivity extends Fragment {
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.showAd:
-                                mRewardedVideoAd.show();
+                                if (mInterstitialAd.isLoaded()) {
+                                    mInterstitialAd.show();
+                                } else {
+                                    Log.d("TAG", "The interstitial wasn't loaded yet.");
+                                }
                                 break;
                             case R.id.closed:
                                 context.finish();
@@ -118,48 +123,32 @@ public class PriceActivity extends Fragment {
     }
 
 
-
-
-
-    //廣告設定
-    private void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",new AdRequest.Builder().build());
-    }
-
-    private class showAds implements RewardedVideoAdListener {
+    private class adListener extends AdListener {
         @Override
-        public void onRewardedVideoAdLoaded() {
-
+        public void onAdLoaded() {
+            // Code to be executed when an ad finishes loading.
         }
 
         @Override
-        public void onRewardedVideoAdOpened() {
-
+        public void onAdFailedToLoad(int errorCode) {
+            mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            // Code to be executed when an ad request fails.
         }
 
         @Override
-        public void onRewardedVideoStarted() {
-
+        public void onAdOpened() {
+            // Code to be executed when the ad is displayed.
         }
 
         @Override
-        public void onRewardedVideoAdClosed() {
-            loadRewardedVideoAd();
+        public void onAdLeftApplication() {
+            // Code to be executed when the user has left the app.
         }
 
         @Override
-        public void onRewarded(RewardItem rewardItem) {
-
-        }
-
-        @Override
-        public void onRewardedVideoAdLeftApplication() {
-
-        }
-
-        @Override
-        public void onRewardedVideoAdFailedToLoad(int i) {
-            loadRewardedVideoAd();
+        public void onAdClosed() {
+            // Code to be executed when when the interstitial ad is closed.
+            mInterstitialAd.loadAd(new AdRequest.Builder().build());
         }
     }
 }

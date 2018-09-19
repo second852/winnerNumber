@@ -68,7 +68,7 @@ public final class MultiTrackerActivity extends AppCompatActivity {
     public static TextView answer;
     public static String result;
     //避免重複兌獎
-    public static String oldElu,p;
+    public static String oldElu,p,periodOld;
     public static boolean isold;
     public static int colorChange;
     public BootstrapButton backP;
@@ -102,6 +102,7 @@ public final class MultiTrackerActivity extends AppCompatActivity {
             });
             answer.setVisibility(View.VISIBLE);
         MultiTrackerActivity.oldElu=null;
+        MultiTrackerActivity.periodOld=null;
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
