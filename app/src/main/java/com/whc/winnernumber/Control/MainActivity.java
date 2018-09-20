@@ -5,12 +5,14 @@ import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
@@ -34,6 +36,19 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setJob();
+        }
+
+        adjustFontScale(getResources().getConfiguration());
+    }
+
+    public void adjustFontScale(Configuration configuration) {
+        if (configuration.fontScale > 1) {
+            configuration.fontScale = (float) 1;
+            DisplayMetrics metrics = getResources().getDisplayMetrics();
+            WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+            wm.getDefaultDisplay().getMetrics(metrics);
+            metrics.scaledDensity = configuration.fontScale * metrics.density;
+            getBaseContext().getResources().updateConfiguration(configuration, metrics);
         }
     }
 

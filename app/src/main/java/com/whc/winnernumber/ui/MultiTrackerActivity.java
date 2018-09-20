@@ -35,6 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.beardedhen.androidbootstrap.AwesomeTextView;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.google.android.gms.ads.AdView;
@@ -71,6 +72,7 @@ public final class MultiTrackerActivity extends AppCompatActivity {
     public static String oldElu,p,periodOld;
     public static boolean isold;
     public static int colorChange;
+    public static AwesomeTextView awardTitle;
     public BootstrapButton backP;
     public AdView adView;
     /**
@@ -88,6 +90,7 @@ public final class MultiTrackerActivity extends AppCompatActivity {
         adView= (AdView) findViewById(R.id.adView);
         Common.setAdView(adView,this);
         answer= (TextView) findViewById(R.id.answer);
+        awardTitle=findViewById(R.id.awardTitle);
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
         backP= (BootstrapButton) findViewById(R.id.backP);
