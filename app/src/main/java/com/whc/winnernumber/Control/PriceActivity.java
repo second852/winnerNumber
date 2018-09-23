@@ -76,8 +76,8 @@ public class PriceActivity extends Fragment {
 
         //set Page
         FragmentPagerItems pages = new FragmentPagerItems(context);
-        pages.add(FragmentPagerItem.of("發票兌獎", PriceHand.class));
-        pages.add(FragmentPagerItem.of("兌獎號碼", PriceNumber.class));
+        pages.add(FragmentPagerItem.of("發票對獎", PriceHand.class));
+        pages.add(FragmentPagerItem.of("對獎號碼", PriceNumber.class));
         FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(getFragmentManager(),pages);
         priceViewPager.setAdapter(adapter);
         viewPagerTab.setViewPager(priceViewPager);
@@ -86,7 +86,7 @@ public class PriceActivity extends Fragment {
         //set 廣告
         adView = (AdView) view.findViewById(R.id.adView);
         Common.setAdView(adView, context);
-        //差頁式廣告
+        //插頁式廣告
         mInterstitialAd = new InterstitialAd(context);
         mInterstitialAd.setAdUnitId("ca-app-pub-5169620543343332/9437906246");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
