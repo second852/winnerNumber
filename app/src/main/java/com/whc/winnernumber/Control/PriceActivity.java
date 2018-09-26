@@ -86,7 +86,7 @@ public class PriceActivity extends Fragment {
         //set 廣告
         adView = (AdView) view.findViewById(R.id.adView);
         Common.setAdView(adView, context);
-        //差頁式廣告
+        //插頁式廣告
         mInterstitialAd = new InterstitialAd(context);
         mInterstitialAd.setAdUnitId("ca-app-pub-5169620543343332/9437906246");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
