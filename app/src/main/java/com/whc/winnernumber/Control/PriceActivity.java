@@ -76,8 +76,8 @@ public class PriceActivity extends Fragment {
 
         //set Page
         FragmentPagerItems pages = new FragmentPagerItems(context);
-        pages.add(FragmentPagerItem.of("發票兌獎", PriceHand.class));
-        pages.add(FragmentPagerItem.of("兌獎號碼", PriceNumber.class));
+        pages.add(FragmentPagerItem.of("發票對獎", PriceHand.class));
+        pages.add(FragmentPagerItem.of("對獎號碼", PriceNumber.class));
         FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(getFragmentManager(),pages);
         priceViewPager.setAdapter(adapter);
         viewPagerTab.setViewPager(priceViewPager);

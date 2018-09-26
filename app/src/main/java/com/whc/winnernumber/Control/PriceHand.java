@@ -27,6 +27,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -71,7 +72,7 @@ public class PriceHand extends Fragment {
     private PriceDB priceDB;
     private Calendar now;
     private int month, year;
-    private PriceVO priceVO, oldPriceVO;
+    private PriceVO priceVO, oldPriceVO, grandPriceVO;
     private String message = "";
     private List<PriceVO> priceVOS;
     private HashMap<String, String> levelPrice;
@@ -84,8 +85,10 @@ public class PriceHand extends Fragment {
     private AwesomeTextView awardTitle, awardRemain;
     private int position;
     private List<BootstrapText> bootstrapTexts;
-    private Drawable beforeStyle,afterStyle;
-    private Drawable beforeDeleteS,afterDeleteS;
+    private Drawable beforeStyle, afterStyle;
+    private Drawable beforeDeleteS, afterDeleteS;
+    private float remainTextSize,mutilTextSize;
+
 
     @Override
     public void onAttach(Context context) {
@@ -95,8 +98,20 @@ public class PriceHand extends Fragment {
         } else {
             this.context = getActivity();
         }
-        WinnerDB winnerDB=new WinnerDB(context);
-        priceDB=new PriceDB(winnerDB.getReadableDatabase());
+        WinnerDB winnerDB = new WinnerDB(context);
+        priceDB = new PriceDB(winnerDB.getReadableDatabase());
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        if (dpWidth > 650) {
+            remainTextSize=40f;
+            mutilTextSize=35f;
+        } else if (dpWidth > 470) {
+            remainTextSize=30f;
+            mutilTextSize=25f;
+        } else {
+            remainTextSize=25f;
+            mutilTextSize=18f;
+        }
     }
 
     @Nullable
@@ -105,10 +120,10 @@ public class PriceHand extends Fragment {
         View view = inflater.inflate(R.layout.price_hand, container, false);
         now = Calendar.getInstance();
 
-        beforeStyle= getResources().getDrawable(R.drawable.price_clear_before);
-        afterStyle=getResources().getDrawable(R.drawable.price_clear_after);
-        beforeDeleteS=getResources().getDrawable(R.drawable.price_delete_before);
-        afterDeleteS=getResources().getDrawable(R.drawable.price_delete_after);
+        beforeStyle = getResources().getDrawable(R.drawable.price_clear_before);
+        afterStyle = getResources().getDrawable(R.drawable.price_clear_after);
+        beforeDeleteS = getResources().getDrawable(R.drawable.price_delete_before);
+        afterDeleteS = getResources().getDrawable(R.drawable.price_delete_after);
 
 
         findViewById(view);
@@ -139,7 +154,6 @@ public class PriceHand extends Fragment {
         });
         return view;
     }
-
 
 
     private List<String> getInputN() {
@@ -175,7 +189,7 @@ public class PriceHand extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 6){
+        if (requestCode == 6) {
             choiceModel.setBootstrapText(bootstrapTexts.get(0));
             choiceModel.setShowOutline(false);
             setOneActon();
@@ -183,11 +197,11 @@ public class PriceHand extends Fragment {
         }
         int result = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO);
         if (result != PackageManager.PERMISSION_GRANTED) {
-            Common.showToast(context,"沒有麥克風權限，無法使聲音兌獎!");
+            Common.showToast(context, "沒有麥克風權限，無法使聲音兌獎!");
             choiceModel.setBootstrapText(bootstrapTexts.get(0));
             choiceModel.setShowOutline(false);
             setOneActon();
-        }else {
+        } else {
             choiceModel.setBootstrapText(bootstrapTexts.get(1));
             choiceModel.setShowOutline(false);
             setTwoActon();
@@ -204,16 +218,15 @@ public class PriceHand extends Fragment {
         } else {
             DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                   if(ActivityCompat.shouldShowRequestPermissionRationale(context, Manifest.permission.RECORD_AUDIO))
-                   {
-                       Common.askPermissions(Manifest.permission.RECORD_AUDIO, context,0);
-                   }else {
-                       Intent intent = new Intent();
-                       intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                       Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
-                       intent.setData(uri);
-                       context.startActivityForResult(intent,12);
-                   }
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(context, Manifest.permission.RECORD_AUDIO)) {
+                        Common.askPermissions(Manifest.permission.RECORD_AUDIO, context, 0);
+                    } else {
+                        Intent intent = new Intent();
+                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+                        intent.setData(uri);
+                        context.startActivityForResult(intent, 12);
+                    }
                 }
             };
             DialogInterface.OnClickListener nolistener = new DialogInterface.OnClickListener() {
@@ -225,9 +238,9 @@ public class PriceHand extends Fragment {
             };
             String remain;
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.RECORD_AUDIO)) {
-                remain="沒有麥克風權限!\n請按\"YES\"並允許此權限。\n不使用此功能請按\"NO\"。";
+                remain = "沒有麥克風權限!\n請按\"YES\"並允許此權限。\n不使用此功能請按\"NO\"。";
             } else {
-                remain="沒有麥克風權限!\n如果要使用此功能按\"YES\"。\n並到權限，打開麥克風權限!\n不使用此功能請按\"NO\"。";
+                remain = "沒有麥克風權限!\n如果要使用此功能按\"YES\"。\n並到權限，打開麥克風權限!\n不使用此功能請按\"NO\"。";
             }
 
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -244,7 +257,7 @@ public class PriceHand extends Fragment {
         String messageO, messageT;
         HashMap<Integer, String> messageHMO = new HashMap<>();
         HashMap<Integer, String> messageHMT = new HashMap<>();
-        int i = 0;
+        int i = 0,period=0;
         for (PriceVO priceVO : priceVOS) {
             String nul = gnul;
             messageO = null;
@@ -297,10 +310,65 @@ public class PriceHand extends Fragment {
             }
             messageHMO.put(i, messageO);
             messageHMT.put(i, messageT);
+            if(messageO!=null)
+            {
+                period++;
+            }
             i++;
         }
         String year, month;
         int redF;
+        //兩期以上號碼都中 處理
+        if (period>=2) {
+            awardTitle.setText(null);
+            StringBuilder sb = new StringBuilder();
+            for (int key : messageHMT.keySet()) {
+                //null filter
+                if(messageHMT.get(key)==null)
+                {
+                    continue;
+                }
+                switch (key) {
+                    case 0:
+                        month = priceVO.getInvoYm().substring(priceVO.getInvoYm().length() - 2);
+                        year=priceVO.getInvoYm().substring(0,priceVO.getInvoYm().length() - 2);
+                        sb.append(year+"年"+levelPrice.get(month));
+                        break;
+                    case 1:
+                        month = oldPriceVO.getInvoYm().substring(oldPriceVO.getInvoYm().length() - 2);
+                        year=priceVO.getInvoYm().substring(0,oldPriceVO.getInvoYm().length() - 2);
+                        sb.append(year+"年"+levelPrice.get(month));
+                        break;
+                    case 2:
+                        month = grandPriceVO.getInvoYm().substring(grandPriceVO.getInvoYm().length() - 2);
+                        year=grandPriceVO.getInvoYm().substring(0,grandPriceVO.getInvoYm().length() - 2);
+                        sb.append(year+"年"+levelPrice.get(month));
+                        break;
+                }
+                sb.append(" " + messageHMT.get(key)+"\n");
+            }
+            priceTitle.setText("");
+            //換顯示寬框
+            Drawable drawable = getResources().getDrawable(R.drawable.price_result);
+            inputNul.setBackground(drawable);
+            inputNul.setTextColor(Color.RED);
+
+            //提示
+            Spannable content = new SpannableString(sb.toString());
+            String[] prices=sb.toString().split(gnul);
+            int totalBlack=0;
+            for (int j=0;j<prices.length-2;j++)
+            {
+                totalBlack=totalBlack+prices[j].length()+3*j;
+                content.setSpan(new ForegroundColorSpan(Color.RED), totalBlack,  totalBlack+3, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            int totalLength=sb.toString().length()-1;
+            content.setSpan(new ForegroundColorSpan(Color.RED), totalLength-3,  totalLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            awardRemain.setTextSize(mutilTextSize);
+            awardRemain.setText(content);
+            return;
+        }
+        //當期
         if (messageHMO.get(0) != null) {
             //獎項
             BootstrapText text = new BootstrapText.Builder(context)
@@ -325,6 +393,7 @@ public class PriceHand extends Fragment {
             awardRemain.setText("");
             return;
         }
+        //上期
         if (messageHMO.get(1) != null) {
             //獎項
             String old;
@@ -352,6 +421,34 @@ public class PriceHand extends Fragment {
             awardRemain.setText("");
             return;
         }
+        //上上期
+        if (messageHMO.get(2) != null) {
+            //獎項
+            String old;
+            month = grandPriceVO.getInvoYm().substring(grandPriceVO.getInvoYm().length() - 2);
+            old = levelPrice.get(month) + messageHMO.get(2);
+            BootstrapText text = new BootstrapText.Builder(context)
+                    .addFontAwesomeIcon(FA_STAR_O)
+                    .addText(" " + old + " ")
+                    .addFontAwesomeIcon(FA_STAR_O)
+                    .build();
+            awardTitle.setText(text);
+            awardTitle.setBootstrapBrand(DefaultBootstrapBrand.WARNING);
+            //號碼
+            redF = messageHMT.get(2).length();
+            Spannable content = new SpannableString(messageHMT.get(2));
+            content.setSpan(new ForegroundColorSpan(Color.parseColor("#ffc107")), redF - 3, redF, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            priceTitle.setText(content);
+
+            //換顯示寬框
+            Drawable drawable = getResources().getDrawable(R.drawable.price_grand);
+            inputNul.setBackground(drawable);
+            inputNul.setTextColor(Color.parseColor("#ffc107"));
+
+            //提示不顯示
+            awardRemain.setText("");
+            return;
+        }
 
         if (messageHMO.get(0) == null) {
             BootstrapText text = new BootstrapText.Builder(context)
@@ -362,6 +459,7 @@ public class PriceHand extends Fragment {
                     .build();
             awardRemain.setBootstrapBrand(DefaultBootstrapBrand.PRIMARY);
             awardRemain.setText(text);
+            awardRemain.setTextSize(remainTextSize);
             awardTitle.setText(null);
             priceTitle.setText(null);
         }
@@ -369,39 +467,49 @@ public class PriceHand extends Fragment {
 
 
     private void setMonText(String action) {
-        String showtime, searchtime, searcholdtime;
+        String showtime, searchTime, searchOldTime, searchGrandTime;
         if (month == 2) {
             showtime = year + "年1-2月";
-            searchtime = year + "02";
-            searcholdtime = (year - 1) + "12";
+            searchTime = year + "02";
+            searchOldTime = (year - 1) + "12";
+            searchGrandTime = (year - 1) + "10";
         } else if (month == 4) {
             showtime = year + "年3-4月";
-            searchtime = year + "04";
-            searcholdtime = year + "02";
+            searchTime = year + "04";
+            searchOldTime = year + "02";
+            searchGrandTime = (year - 1) + "12";
         } else if (month == 6) {
             showtime = year + "年5-6月";
-            searchtime = year + "06";
-            searcholdtime = year + "04";
+            searchTime = year + "06";
+            searchOldTime = year + "04";
+            searchGrandTime = year + "02";
         } else if (month == 8) {
             showtime = year + "年7-8月";
-            searchtime = year + "08";
-            searcholdtime = year + "06";
+            searchTime = year + "08";
+            searchOldTime = year + "06";
+            searchGrandTime = year + "04";
         } else if (month == 10) {
             showtime = year + "年9-10月";
-            searchtime = year + "10";
-            searcholdtime = year + "08";
+            searchTime = year + "10";
+            searchOldTime = year + "08";
+            searchGrandTime = year + "06";
         } else {
             showtime = year + "年11-12月";
-            searchtime = year + "12";
-            searcholdtime = year + "10";
+            searchTime = year + "12";
+            searchOldTime = year + "10";
+            searchGrandTime = year + "08";
         }
-        priceVO = priceDB.getPeriodAll(searchtime);
-        oldPriceVO = priceDB.getPeriodAll(searcholdtime);
+        priceVO = priceDB.getPeriodAll(searchTime);
+        oldPriceVO = priceDB.getPeriodAll(searchOldTime);
+        grandPriceVO = priceDB.getPeriodAll(searchGrandTime);
+
         priceVOS = new ArrayList<>();
         priceVOS.add(priceVO);
         priceVOS.add(oldPriceVO);
+        priceVOS.add(grandPriceVO);
+
         if (priceVO == null && action.equals("add")) {
-            month = month - 2;
+            month = month - 4;
             if (month == 0) {
                 month = 12;
                 year = year - 1;
@@ -411,7 +519,7 @@ public class PriceHand extends Fragment {
             return;
         }
         if (priceVO == null && action.equals("cut")) {
-            month = month + 2;
+            month = month + 4;
             if (month > 12) {
                 month = 2;
                 year = year + 1;
@@ -450,13 +558,12 @@ public class PriceHand extends Fragment {
         modelR = (RelativeLayout) view.findViewById(R.id.modelR);
         awardTitle = (AwesomeTextView) view.findViewById(R.id.awardTitle);
         String[] SpinnerItem = new String[3];
-        SpinnerItem[0]="鍵盤";
-        SpinnerItem[1]="聲音";
-        SpinnerItem[2]="QRCode掃描";
+        SpinnerItem[0] = "鍵盤";
+        SpinnerItem[1] = "聲音";
+        SpinnerItem[2] = "QRCode掃描";
 
-        bootstrapTexts=new ArrayList<>();
-        for(int i=0;i<SpinnerItem.length;i++)
-        {
+        bootstrapTexts = new ArrayList<>();
+        for (int i = 0; i < SpinnerItem.length; i++) {
             bootstrapTexts.add(Common.setPriceHandSetBsTest(context, SpinnerItem[i]));
         }
 
@@ -467,9 +574,8 @@ public class PriceHand extends Fragment {
         choiceModel.setOnDropDownItemClickListener(new BootstrapDropDown.OnDropDownItemClickListener() {
             @Override
             public void onItemClick(ViewGroup parent, View v, int i) {
-                if(i!=2)
-                {
-                    position=i;
+                if (i != 2) {
+                    position = i;
                     choiceModel.setBootstrapText(bootstrapTexts.get(i));
                     choiceModel.setShowOutline(false);
                 }
@@ -587,7 +693,7 @@ public class PriceHand extends Fragment {
                 .build();
         awardRemain.setText(text);
         awardRemain.setBootstrapBrand(DefaultBootstrapBrand.REGULAR);
-
+        awardRemain.setTextSize(remainTextSize);
         showMi.setVisibility(View.VISIBLE);
         donateRL.setVisibility(View.INVISIBLE);
 
@@ -598,8 +704,8 @@ public class PriceHand extends Fragment {
 
         int rc = ActivityCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO);
         if (rc != PackageManager.PERMISSION_GRANTED) {
-            Common.askPermissions(Manifest.permission.RECORD_AUDIO, context,0);
-        }else {
+            Common.askPermissions(Manifest.permission.RECORD_AUDIO, context, 0);
+        } else {
             startListening();
         }
     }
@@ -617,7 +723,7 @@ public class PriceHand extends Fragment {
                 .build();
         awardRemain.setText(text);
         awardRemain.setBootstrapBrand(DefaultBootstrapBrand.REGULAR);
-
+        awardRemain.setTextSize(remainTextSize);
         Drawable drawable = getResources().getDrawable(R.drawable.price_button);
         inputNul.setBackground(drawable);
         inputNul.setTextColor(Color.parseColor("#888888"));
@@ -646,25 +752,26 @@ public class PriceHand extends Fragment {
             awardTitle.setText(null);
             priceTitle.setText(null);
             inputNul.setText(null);
-            message="";
+            message = "";
             //設定提醒
             awardRemain.setBootstrapBrand(DefaultBootstrapBrand.REGULAR);
             BootstrapText text;
-            switch (position)
-            {
+            switch (position) {
                 case 0:
-                   text = new BootstrapText.Builder(context)
+                    text = new BootstrapText.Builder(context)
                             .addText("請輸入末三碼 ")
                             .addFontAwesomeIcon(FA_EXCLAMATION_CIRCLE)
                             .build();
                     awardRemain.setText(text);
+                    awardRemain.setTextSize(remainTextSize);
                     break;
                 case 1:
-                   text = new BootstrapText.Builder(context)
+                    text = new BootstrapText.Builder(context)
                             .addText("請念末三碼 ")
                             .addFontAwesomeIcon(FA_EXCLAMATION_CIRCLE)
                             .build();
                     awardRemain.setText(text);
+                    awardRemain.setTextSize(remainTextSize);
                     break;
             }
 
@@ -687,18 +794,18 @@ public class PriceHand extends Fragment {
             awardTitle.setText(null);
             priceTitle.setText(null);
             inputNul.setText(null);
-            message="";
+            message = "";
             //設定提醒
             awardRemain.setBootstrapBrand(DefaultBootstrapBrand.REGULAR);
             BootstrapText text;
-            switch (position)
-            {
+            switch (position) {
                 case 0:
                     text = new BootstrapText.Builder(context)
                             .addText("請輸入末三碼 ")
                             .addFontAwesomeIcon(FA_EXCLAMATION_CIRCLE)
                             .build();
                     awardRemain.setText(text);
+                    awardRemain.setTextSize(remainTextSize);
                     break;
                 case 1:
                     text = new BootstrapText.Builder(context)
@@ -706,6 +813,7 @@ public class PriceHand extends Fragment {
                             .addFontAwesomeIcon(FA_EXCLAMATION_CIRCLE)
                             .build();
                     awardRemain.setText(text);
+                    awardRemain.setTextSize(remainTextSize);
                     break;
             }
         }
@@ -756,8 +864,7 @@ public class PriceHand extends Fragment {
                     viewHolder.cardview.setOnTouchListener(new View.OnTouchListener() {
                         @Override
                         public boolean onTouch(View view, MotionEvent motionEvent) {
-                            if(motionEvent.getAction()== MotionEvent.ACTION_DOWN||motionEvent.getAction()== MotionEvent.ACTION_BUTTON_PRESS)
-                            {
+                            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN || motionEvent.getAction() == MotionEvent.ACTION_BUTTON_PRESS) {
                                 Drawable drawable = getResources().getDrawable(R.drawable.price_button);
                                 inputNul.setBackground(drawable);
                                 inputNul.setTextColor(Color.parseColor("#888888"));
@@ -767,14 +874,14 @@ public class PriceHand extends Fragment {
                                         .build();
                                 awardRemain.setText(textRemain);
                                 awardRemain.setBootstrapBrand(DefaultBootstrapBrand.REGULAR);
-
+                                awardRemain.setTextSize(remainTextSize);
                                 awardTitle.setText(null);
                                 priceTitle.setText(null);
                                 inputNul.setText(null);
-                                message="";
+                                message = "";
                                 viewHolder.cardview.setBackground(afterStyle);
                                 viewHolder.cardview.setTextColor(Color.WHITE);
-                            }else{
+                            } else {
                                 viewHolder.cardview.setBackground(beforeStyle);
                                 viewHolder.cardview.setTextColor(Color.parseColor("#FF0000"));
                             }
@@ -788,8 +895,7 @@ public class PriceHand extends Fragment {
                     viewHolder.cardview.setOnTouchListener(new View.OnTouchListener() {
                         @Override
                         public boolean onTouch(View view, MotionEvent motionEvent) {
-                            if(motionEvent.getAction()== MotionEvent.ACTION_DOWN||motionEvent.getAction()== MotionEvent.ACTION_BUTTON_PRESS)
-                            {
+                            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN || motionEvent.getAction() == MotionEvent.ACTION_BUTTON_PRESS) {
                                 //中獎資訊reset
                                 Drawable drawable = getResources().getDrawable(R.drawable.price_button);
                                 inputNul.setBackground(drawable);
@@ -804,7 +910,7 @@ public class PriceHand extends Fragment {
                                         .build();
                                 awardRemain.setText(textRemain);
                                 awardRemain.setBootstrapBrand(DefaultBootstrapBrand.REGULAR);
-
+                                awardRemain.setTextSize(remainTextSize);
                                 //顯示底線
                                 SpannableString content;
                                 if (message.length() > 2) {
@@ -823,7 +929,7 @@ public class PriceHand extends Fragment {
                                 }
                                 viewHolder.cardview.setBackground(afterDeleteS);
                                 viewHolder.cardview.setTextColor(Color.WHITE);
-                            }else{
+                            } else {
                                 viewHolder.cardview.setBackground(beforeDeleteS);
                                 viewHolder.cardview.setTextColor(Color.parseColor("#009FCC"));
                             }
@@ -831,36 +937,37 @@ public class PriceHand extends Fragment {
                         }
                     });
                     break;
-                    default:
-                        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Drawable drawable = getResources().getDrawable(R.drawable.price_button);
-                                inputNul.setBackground(drawable);
-                                inputNul.setTextColor(Color.parseColor("#888888"));
-                                awardTitle.setText(null);
-                                priceTitle.setText(null);
-                                BootstrapText textRemain = new BootstrapText.Builder(context)
-                                        .addText("請輸入末三碼 ")
-                                        .addFontAwesomeIcon(FA_EXCLAMATION_CIRCLE)
-                                        .build();
-                                awardRemain.setBootstrapBrand(DefaultBootstrapBrand.REGULAR);
-                                message = message + number;
-                                if (message.length() == 3) {
-                                    autoSetInWin(message);
-                                }
-                                if (message.length() > 3) {
-                                    message = number;
-                                    awardRemain.setText(textRemain);
-                                }
-                                //底線
-                                SpannableString content;
-                                content = new SpannableString(message);
-                                content.setSpan(new UnderlineSpan(), message.length() - 1, content.length(), 0);
-                                inputNul.setText(content);
+                default:
+                    viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Drawable drawable = getResources().getDrawable(R.drawable.price_button);
+                            inputNul.setBackground(drawable);
+                            inputNul.setTextColor(Color.parseColor("#888888"));
+                            awardTitle.setText(null);
+                            priceTitle.setText(null);
+                            BootstrapText textRemain = new BootstrapText.Builder(context)
+                                    .addText("請輸入末三碼 ")
+                                    .addFontAwesomeIcon(FA_EXCLAMATION_CIRCLE)
+                                    .build();
+                            awardRemain.setBootstrapBrand(DefaultBootstrapBrand.REGULAR);
+                            awardRemain.setTextSize(remainTextSize);
+                            message = message + number;
+                            if (message.length() == 3) {
+                                autoSetInWin(message);
                             }
-                        });
-                        break;
+                            if (message.length() > 3) {
+                                message = number;
+                                awardRemain.setText(textRemain);
+                            }
+                            //底線
+                            SpannableString content;
+                            content = new SpannableString(message);
+                            content.setSpan(new UnderlineSpan(), message.length() - 1, content.length(), 0);
+                            inputNul.setText(content);
+                        }
+                    });
+                    break;
             }
         }
     }

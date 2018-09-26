@@ -219,6 +219,10 @@ public class Donwload extends Fragment {
                 break;
             }
             JsonObject js = gson.fromJson(jsonin, JsonObject.class);
+            if(js==null)
+            {
+                break;
+            }
             String code = js.get("code").getAsString().trim();
             if (code.equals("200")) {
                 PriceVO priceVO = jsonToPriceVO(jsonin);
@@ -311,6 +315,9 @@ public class Donwload extends Fragment {
                     jsonIn.append(line);
                 }
                 Log.d("jsonIn", "jsonIn " + jsonIn);
+            }else{
+                jsonIn = new StringBuilder();
+                jsonIn.append("timeout");
             }
         } catch (SocketTimeoutException e) {
             jsonIn = new StringBuilder();
@@ -350,7 +357,12 @@ public class Donwload extends Fragment {
         adView = (AdView) view.findViewById(R.id.adView);
         Common.setAdView(adView, activity);
         gson = new Gson();
-        new Thread(downloadData).start();
+        if(priceDB.getAll().size()<=0)
+        {
+            new Thread(downloadData).start();
+        }else {
+            toNewFragment();
+        }
         return view;
     }
 
