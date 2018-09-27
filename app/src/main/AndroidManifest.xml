@@ -58,9 +58,10 @@
 
         <service
             android:name=".Control.BootReceiverJob"
+            android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <service android:name=".Control.DownloadService"/>
+        <service android:name=".Control.DownloadService" />
     </application>
     <meta-data
         android:name="com.google.android.gms.ads.APPLICATION_ID"

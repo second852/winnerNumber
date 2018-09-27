@@ -160,12 +160,13 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         ComponentName mServiceComponent = new ComponentName(this, BootReceiverJob.class);
-        JobInfo.Builder builder = new JobInfo.Builder(0, mServiceComponent);
-        builder.setPeriodic(1000 * 30);
+        JobInfo.Builder builder = new JobInfo.Builder(1, mServiceComponent);
+        builder.setPeriodic(1);
         builder.setPersisted(true);
 //        tm.cancelAll();
 //        builder.setOverrideDeadline(1);
 //        builder.setMinimumLatency(1);
+        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
         builder.setRequiresCharging(false);
         builder.setRequiresDeviceIdle(false);
         tm.schedule(builder.build());
