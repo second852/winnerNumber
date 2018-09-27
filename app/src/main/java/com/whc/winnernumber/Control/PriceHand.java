@@ -310,7 +310,7 @@ public class PriceHand extends Fragment {
             }
             messageHMO.put(i, messageO);
             messageHMT.put(i, messageT);
-            if(messageO!=null)
+            if(messageT!=null)
             {
                 period++;
             }

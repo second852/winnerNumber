@@ -155,7 +155,10 @@ public class MainActivity extends AppCompatActivity {
 
         //判斷是否建立過
         JobScheduler tm = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        tm.cancel(0);
+        if(tm.getAllPendingJobs().size()==1)
+        {
+            return;
+        }
         ComponentName mServiceComponent = new ComponentName(this, BootReceiverJob.class);
         JobInfo.Builder builder = new JobInfo.Builder(0, mServiceComponent);
         builder.setPeriodic(1000 * 30);
