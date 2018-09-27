@@ -12,6 +12,7 @@ import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -21,12 +22,15 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
 
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.whc.winnernumber.DataBase.PriceDB;
 import com.whc.winnernumber.DataBase.WinnerDB;
+import com.whc.winnernumber.Model.PriceVO;
 import com.whc.winnernumber.R;
 
 import java.util.HashSet;
@@ -34,33 +38,49 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static RelativeLayout origin;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TypefaceProvider.registerDefaultIconSets();
         setContentView(R.layout.activity_main);
-        getSupportActionBar().hide();
-
-        WinnerDB winnerDB = new WinnerDB(this);
-        PriceDB priceDB = new PriceDB(winnerDB.getReadableDatabase());
-        if (priceDB.getAll().size() <= 0) {
-            askPermissions();
-        } else {
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.body, new PriceActivity());
-            fragmentTransaction.commit();
-        }
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setJob();
-        } else {
-            Intent intent = new Intent(MainActivity.this, DownloadService.class);
-            startService(intent);
-        }
-        adjustFontScale(getResources().getConfiguration());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                origin=findViewById(R.id.origin);
+                handlerWork.sendEmptyMessageDelayed(0,1000);
+            }
+        }).start();
     }
+
+
+    private Handler handlerWork=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            getSupportActionBar().hide();
+            WinnerDB winnerDB = new WinnerDB(MainActivity.this);
+            PriceDB priceDB = new PriceDB(winnerDB.getReadableDatabase());
+            if (priceDB.getAll().size() <= 0) {
+                askPermissions();
+            } else {
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right);
+                fragmentTransaction.replace(R.id.body, new PriceActivity());
+                fragmentTransaction.commit();
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                setJob();
+            } else {
+                Intent intent = new Intent(MainActivity.this, DownloadService.class);
+                startService(intent);
+            }
+            adjustFontScale(getResources().getConfiguration());
+        }
+    };
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -110,8 +130,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void permisionOk() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right);
         fragmentTransaction.replace(R.id.body, new Donwload());
         fragmentTransaction.commit();
+        origin.setVisibility(View.GONE);
     }
 
 
@@ -127,23 +149,20 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void setJob() {
 
+//        WinnerDB winnerDB = new WinnerDB(MainActivity.this);
+//        PriceDB priceDB = new PriceDB(winnerDB.getReadableDatabase());
+//        priceDB.deleteById("10708");
+
         //判斷是否建立過
         JobScheduler tm = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        boolean hasBeenScheduled = false;
-        for (JobInfo jobInfo : tm.getAllPendingJobs()) {
-            if (jobInfo.getId() == 0) {
-                hasBeenScheduled = true;
-                break;
-            }
-        }
-        if (hasBeenScheduled) {
-            return;
-        }
-
+        tm.cancel(0);
         ComponentName mServiceComponent = new ComponentName(this, BootReceiverJob.class);
         JobInfo.Builder builder = new JobInfo.Builder(0, mServiceComponent);
-        builder.setPeriodic(1000 * 60 * 60);
+        builder.setPeriodic(1000 * 30);
         builder.setPersisted(true);
+//        tm.cancelAll();
+//        builder.setOverrideDeadline(1);
+//        builder.setMinimumLatency(1);
         builder.setRequiresCharging(false);
         builder.setRequiresDeviceIdle(false);
         tm.schedule(builder.build());

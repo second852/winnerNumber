@@ -52,7 +52,7 @@ public class BootReceiverJob extends JobService {
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         int month = calendar.get(Calendar.MONTH) + 1;
 
-        //開蔣提醒
+        //開獎提醒
         if (month == 1 || month == 3 || month == 5 || month == 7 || month == 9 || month == 11) {
             if (day == 25) {
                 WinnerDB winnerDB=new WinnerDB(this);

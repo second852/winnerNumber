@@ -507,9 +507,8 @@ public class PriceHand extends Fragment {
         priceVOS.add(priceVO);
         priceVOS.add(oldPriceVO);
         priceVOS.add(grandPriceVO);
-
         if (priceVO == null && action.equals("add")) {
-            month = month - 4;
+            month = month - 2;
             if (month == 0) {
                 month = 12;
                 year = year - 1;
@@ -519,11 +518,12 @@ public class PriceHand extends Fragment {
             return;
         }
         if (priceVO == null && action.equals("cut")) {
-            month = month + 4;
+            month = month +2;
             if (month > 12) {
                 month = 2;
                 year = year + 1;
             }
+            setMonText("cut");
             Common.showToast(context, "沒有資料");
             return;
         }

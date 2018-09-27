@@ -121,6 +121,7 @@ public class PriceNumber extends Fragment {
                 month=2;
                 year=year+1;
             }
+            setMonText("cut");
             Common.showToast(context, "沒有資料");
             return;
         }

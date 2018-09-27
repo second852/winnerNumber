@@ -18,8 +18,8 @@
         >
         <ImageView
             android:id="@+id/image"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
             android:src="@mipmap/download"
             android:layout_centerHorizontal="true"
             />
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/standard"
             android:layout_centerHorizontal="true"
-            android:textSize="25sp"
+            android:textSize="35sp"
             app:bootstrapBrand="info"
             app:bootstrapText="{fa-cloud} 載入資料，中請稍後 {fa-exclamation}"
             />

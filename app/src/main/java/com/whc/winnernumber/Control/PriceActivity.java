@@ -122,6 +122,11 @@ public class PriceActivity extends Fragment {
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        MainActivity.origin.setVisibility(View.GONE);
+    }
 
     private class adListener extends AdListener {
         @Override
