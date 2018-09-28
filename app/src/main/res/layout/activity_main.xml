@@ -31,7 +31,7 @@
             android:layout_centerHorizontal="true"
             android:textSize="25sp"
             app:bootstrapBrand="info"
-            app:bootstrapText="{fa-cloud} 載入資料，中請稍後 {fa-exclamation}"
+            app:bootstrapText="{fa-cloud} 載入資料中，請稍後 {fa-exclamation}"
             />
     </RelativeLayout>
     <FrameLayout

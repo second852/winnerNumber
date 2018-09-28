@@ -17,8 +17,9 @@
 
         <ImageView
             android:id="@+id/PIdateCut"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
             android:layout_toLeftOf="@+id/PIdateTittle"
             android:rotation="90"
             android:src="@drawable/arrow" />
@@ -32,12 +33,13 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:textColor="#000000"
-            android:textSize="20sp" />
+            android:textSize="25sp" />
 
         <ImageView
             android:id="@+id/PIdateAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
             android:layout_toRightOf="@+id/PIdateTittle"
             android:rotation="270"
             android:src="@drawable/arrow" />

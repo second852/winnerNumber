@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -77,11 +78,20 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, DownloadService.class);
                 startService(intent);
             }
-            adjustFontScale(getResources().getConfiguration());
         }
     };
 
-
+    @Override
+    public Resources getResources() {
+        Resources res = super.getResources();
+        if(res.getConfiguration().fontScale>1)
+        {
+            Configuration config = new Configuration();
+            config.setToDefaults();
+            res.updateConfiguration(config, res.getDisplayMetrics());
+        }
+        return res;
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -161,12 +171,10 @@ public class MainActivity extends AppCompatActivity {
         }
         ComponentName mServiceComponent = new ComponentName(this, BootReceiverJob.class);
         JobInfo.Builder builder = new JobInfo.Builder(1, mServiceComponent);
-        builder.setPeriodic(1);
+        builder.setPeriodic(1000*60*10);
         builder.setPersisted(true);
-//        tm.cancelAll();
 //        builder.setOverrideDeadline(1);
 //        builder.setMinimumLatency(1);
-        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
         builder.setRequiresCharging(false);
         builder.setRequiresDeviceIdle(false);
         tm.schedule(builder.build());

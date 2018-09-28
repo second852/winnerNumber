@@ -48,18 +48,9 @@ public class BootReceiverJob extends JobService {
     public boolean onStartJob(JobParameters jobParameters) {
         Log.d("BootReceiver", "BootReceiverJob");
         gson=new Gson();
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int month = calendar.get(Calendar.MONTH) + 1;
-
-        //開獎提醒
-        if (month == 1 || month == 3 || month == 5 || month == 7 || month == 9 || month == 11) {
-            if (day == 25) {
-                WinnerDB winnerDB=new WinnerDB(this);
-                priceDB=new PriceDB(winnerDB.getReadableDatabase());
-                new Thread(downloadData).start();
-            }
-        }
+        WinnerDB winnerDB=new WinnerDB(this);
+        priceDB=new PriceDB(winnerDB.getReadableDatabase());
+        new Thread(downloadData).start();
         return true;
     }
 
