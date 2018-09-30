@@ -23,6 +23,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -79,6 +81,18 @@ public final class MultiTrackerActivity extends AppCompatActivity {
      * Initializes the UI and creates the detector pipeline.
      */
 
+
+    @Override
+    public Resources getResources() {
+        Resources res = super.getResources();
+        if(res.getConfiguration().fontScale>1)
+        {
+            Configuration config = new Configuration();
+            config.setToDefaults();
+            res.updateConfiguration(config, res.getDisplayMetrics());
+        }
+        return res;
+    }
 
 
     @Override
