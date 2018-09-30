@@ -14,8 +14,8 @@ android {
         applicationId "com.whc.winnernumber"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 6
-        versionName "1.23"
+        versionCode 7
+        versionName "1.24"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

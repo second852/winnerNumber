@@ -72,6 +72,10 @@ public class Donwload extends Fragment {
                 case 1:
                     HashMap<String, Integer> monthYear = (HashMap<String, Integer>) msg.obj;
                     remain.setText("正在下載" + monthYear.get("year") + "年" + monthYear.get("month") + "月兌獎號碼..");
+                    if(msg.arg1>100)
+                    {
+                        msg.arg1=100;
+                    }
                     circleProgressView.setValue(msg.arg1);
                     break;
                 case 2:
@@ -102,16 +106,12 @@ public class Donwload extends Fragment {
                     searchAllPrice();
                 } else {
                     if (differentMonth < 2) {
-                        Message message = new Message();
-                        message.what = 2;
-                        handler.sendMessage(message);
+                        handler.sendEmptyMessageDelayed(2,300);
 
                         return;
                     } else if (differentMonth == 2) {
                         if (day < 25) {
-                            Message message = new Message();
-                            message.what = 2;
-                            handler.sendMessage(message);
+                            handler.sendEmptyMessageDelayed(2,300);
                             return;
                         }
                     }
@@ -168,9 +168,7 @@ public class Donwload extends Fragment {
                         }
                         month = month - 2;
                     }
-                    Message message = new Message();
-                    message.what = 2;
-                    handler.sendMessage(message);
+                    handler.sendEmptyMessageDelayed(2,500);
                 }
             }
         }
@@ -240,9 +238,7 @@ public class Donwload extends Fragment {
             }
             month = month - 2;
         }
-        Message message = new Message();
-        message.what = 2;
-        handler.sendMessage(message);
+        handler.sendEmptyMessageDelayed(2,500);
     }
 
     private PriceVO jsonToPriceVO(String jsonin) {

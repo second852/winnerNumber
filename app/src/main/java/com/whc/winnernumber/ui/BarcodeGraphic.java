@@ -30,6 +30,7 @@ import android.util.Log;
 import com.beardedhen.androidbootstrap.BootstrapText;
 import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.google.android.gms.vision.barcode.Barcode;
+import com.whc.winnernumber.Control.Common;
 import com.whc.winnernumber.DataBase.PriceDB;
 import com.whc.winnernumber.DataBase.WinnerDB;
 import com.whc.winnernumber.Model.PriceVO;
@@ -273,7 +274,6 @@ public class BarcodeGraphic extends TrackedGraphic<Barcode> {
         }
         if (MultiTrackerActivity.result == null) {
             MultiTrackerActivity.answer.setText("請對準左邊QRCode~");
-
             MultiTrackerActivity.awardTitle.setText(null);
             return;
         }
@@ -283,9 +283,11 @@ public class BarcodeGraphic extends TrackedGraphic<Barcode> {
             {
                 case 0:
                     textColor=Color.BLUE;
+                    MultiTrackerActivity.awardTitle.setBootstrapBrand(DefaultBootstrapBrand.INFO);
                     break;
                 default:
                     textColor=Color.parseColor("#00AA55");
+                    MultiTrackerActivity.awardTitle.setBootstrapBrand(DefaultBootstrapBrand.WARNING);
                     break;
             }
             if(MultiTrackerActivity.result.equals("over"))
@@ -323,7 +325,7 @@ public class BarcodeGraphic extends TrackedGraphic<Barcode> {
                         .addFontAwesomeIcon(FA_FLAG)
                         .build();
                 MultiTrackerActivity.awardTitle.setText(text);
-                MultiTrackerActivity.awardTitle.setBootstrapBrand(DefaultBootstrapBrand.INFO);
+
 
             } else {
                 if(priceVO!=null)
@@ -342,7 +344,6 @@ public class BarcodeGraphic extends TrackedGraphic<Barcode> {
                             .build();
                     MultiTrackerActivity.awardTitle.setText(text);
                     MultiTrackerActivity.awardTitle.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
-
                 }
             }
         }

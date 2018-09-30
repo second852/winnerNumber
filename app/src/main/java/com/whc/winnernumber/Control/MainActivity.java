@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 origin=findViewById(R.id.origin);
-                handlerWork.sendEmptyMessageDelayed(0,1000);
+                handlerWork.sendEmptyMessageDelayed(0,300);
             }
         }).start();
     }
