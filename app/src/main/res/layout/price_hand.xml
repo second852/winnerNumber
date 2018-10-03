@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/PIdateCut"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_gravity="center"
             android:layout_toLeftOf="@+id/PIdateTittle"
             android:rotation="90"
@@ -33,12 +33,12 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:textColor="#000000"
-            android:textSize="25sp" />
+            android:textSize="23sp" />
 
         <ImageView
             android:id="@+id/PIdateAdd"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_gravity="center"
             android:layout_toRightOf="@+id/PIdateTittle"
             android:rotation="270"
@@ -136,8 +136,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/inputNul"
         android:layout_below="@+id/modelR"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
         android:orientation="vertical">
 
         <com.beardedhen.androidbootstrap.AwesomeTextView

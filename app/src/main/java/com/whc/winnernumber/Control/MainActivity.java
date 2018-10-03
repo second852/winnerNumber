@@ -14,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private Handler handlerWork=new Handler(){
+    private Handler handlerWork=new Handler(Looper.getMainLooper()){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    permisionOk();
+                    permissionOk();
                 } else {
 
                     PermissionFragment permissionFragment = new PermissionFragment();
@@ -115,6 +116,12 @@ public class MainActivity extends AppCompatActivity {
             // other 'case' lines to check for other
             // permissions this app might request.
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("WORKAROUND_FOR_BUG_19917_KEY", "WORKAROUND_FOR_BUG_19917_VALUE");
+        super.onSaveInstanceState(outState);
     }
 
 
@@ -134,15 +141,15 @@ public class MainActivity extends AppCompatActivity {
                     permissionsRequest.toArray(new String[permissionsRequest.size()]),
                     87);
         } else {
-            permisionOk();
+            permissionOk();
         }
     }
 
-    private void permisionOk() {
+    private void permissionOk() {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right);
         fragmentTransaction.replace(R.id.body, new Donwload());
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
         origin.setVisibility(View.GONE);
     }
 
@@ -171,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         }
         ComponentName mServiceComponent = new ComponentName(this, BootReceiverJob.class);
         JobInfo.Builder builder = new JobInfo.Builder(1, mServiceComponent);
-        builder.setPeriodic(1000*60*10);
+        builder.setPeriodic(1000*60*60);
         builder.setPersisted(true);
 //        builder.setOverrideDeadline(1);
 //        builder.setMinimumLatency(1);

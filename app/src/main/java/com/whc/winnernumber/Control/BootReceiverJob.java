@@ -1,16 +1,15 @@
 package com.whc.winnernumber.Control;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
@@ -31,8 +30,6 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +52,7 @@ public class BootReceiverJob extends JobService {
     }
 
 
-    private Handler handler=new Handler(){
+    private Handler handler=new Handler(Looper.getMainLooper()){
 
         @Override
         public void handleMessage(Message msg) {
@@ -84,6 +81,10 @@ public class BootReceiverJob extends JobService {
                 int month = calendar.get(Calendar.MONTH);
                 int year = calendar.get(Calendar.YEAR);
                 String maxPeriod = priceDB.findMaxPeriod();
+                if(maxPeriod==null)
+                {
+                    return;
+                }
                 int maxYear = new Integer(maxPeriod.substring(0, maxPeriod.length() - 2)) + 1911;
                 int maXMonth = new Integer(maxPeriod.substring(maxPeriod.length() - 2));
                 int differentMonth = (year - maxYear) * 12 + (month - maXMonth);

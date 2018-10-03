@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -54,7 +55,7 @@ public class DownloadService extends Service {
 
 
 
-    private Handler handler=new Handler(){
+    private Handler handler=new Handler(Looper.getMainLooper()){
         @Override
         public void handleMessage(Message msg) {
             Calendar calendar = Calendar.getInstance();
@@ -79,7 +80,7 @@ public class DownloadService extends Service {
         public void run() {
 
             try {
-                Thread.sleep(1000*60*30);
+                Thread.sleep(1000*60*60);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -137,16 +138,13 @@ public class DownloadService extends Service {
                     if (code.equals("200")) {
                         PriceVO priceVO = jsonToPriceVO(jsonin);
                         priceDB.insert(priceVO);
-
                         //更新完，通知
                         handler.sendMessage(new Message());
-                        //顯示%
                     }
                     month = month - 2;
                 }
             }
         }
-
     };
 
 
