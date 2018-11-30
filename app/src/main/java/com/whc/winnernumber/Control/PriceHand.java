@@ -371,9 +371,12 @@ public class PriceHand extends Fragment {
         //當期
         if (messageHMO.get(0) != null) {
             //獎項
+            String nowPeriod;
+            month = oldPriceVO.getInvoYm().substring(oldPriceVO.getInvoYm().length() - 2);
+            nowPeriod = levelPrice.get(month) + messageHMO.get(0);
             BootstrapText text = new BootstrapText.Builder(context)
                     .addFontAwesomeIcon(FA_STAR)
-                    .addText(" " + messageHMO.get(0) + " ")
+                    .addText(" " + nowPeriod + " ")
                     .addFontAwesomeIcon(FA_STAR)
                     .build();
             awardTitle.setText(text);
@@ -467,38 +470,46 @@ public class PriceHand extends Fragment {
 
 
     private void setMonText(String action) {
-        String showtime, searchTime, searchOldTime, searchGrandTime;
+        String showtime, searchTime, searchOldTime,searchGrandTime,remainT;
         if (month == 2) {
-            showtime = year + "年1-2月";
+            remainT=year + "年1-2月";
+            showtime = (year - 1)+"年9-10月 11-12月 "+year + "年1-2月";
             searchTime = year + "02";
             searchOldTime = (year - 1) + "12";
             searchGrandTime = (year - 1) + "10";
         } else if (month == 4) {
-            showtime = year + "年3-4月";
+            remainT=year + "年 3-4月";
+            showtime = (year - 1)+"年11-12月 "+year +"年1-2月 3-4月";
             searchTime = year + "04";
             searchOldTime = year + "02";
             searchGrandTime = (year - 1) + "12";
         } else if (month == 6) {
-            showtime = year + "年5-6月";
+            remainT=year + "年 5-6月";
+            showtime = year + "年1-2月 3-4月 5-6月";
             searchTime = year + "06";
             searchOldTime = year + "04";
             searchGrandTime = year + "02";
         } else if (month == 8) {
-            showtime = year + "年7-8月";
+            remainT=year + "年 7-8月";
+            showtime = year + "年 3-4月 5-6月 7-8月";
             searchTime = year + "08";
             searchOldTime = year + "06";
             searchGrandTime = year + "04";
         } else if (month == 10) {
-            showtime = year + "年9-10月";
+            remainT=year + "年 9-10月";
+            showtime = year + "年5-6月 7-8月 9-10月";
             searchTime = year + "10";
             searchOldTime = year + "08";
             searchGrandTime = year + "06";
         } else {
-            showtime = year + "年11-12月";
+            remainT=year + "年 11-12月";
+            showtime = year + "年7-8月 9-10月 11-12月";
             searchTime = year + "12";
             searchOldTime = year + "10";
             searchGrandTime = year + "08";
         }
+
+
         priceVO = priceDB.getPeriodAll(searchTime);
         oldPriceVO = priceDB.getPeriodAll(searchOldTime);
         grandPriceVO = priceDB.getPeriodAll(searchGrandTime);
@@ -527,7 +538,13 @@ public class PriceHand extends Fragment {
             Common.showToast(context, "沒有資料");
             return;
         }
-        PIdateTittle.setText(showtime);
+
+        if(oldPriceVO==null||grandPriceVO==null)
+        {
+            PIdateTittle.setText(remainT);
+        }else{
+            PIdateTittle.setText(showtime);
+        }
     }
 
     @Override
