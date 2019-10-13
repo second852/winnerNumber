@@ -4,8 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -17,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.whc.winnernumber.DataBase.PriceDB;
 import com.whc.winnernumber.DataBase.WinnerDB;

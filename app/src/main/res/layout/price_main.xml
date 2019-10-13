@@ -8,8 +8,6 @@
     android:background="#f5f5f5"
     >
     <com.ogaclejapan.smarttablayout.SmartTabLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@id/viewpagertab"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -38,22 +36,22 @@
         android:layout_alignRight="@+id/viewpagertab"
         android:layout_margin="4dp"
         />
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/priceViewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/viewpagertab"
         android:layout_above="@+id/adView"
         >
-    </android.support.v4.view.ViewPager>
+    </androidx.viewpager.widget.ViewPager>
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-5169620543343332/3359901645"
-        />
+        ads:adUnitId="ca-app-pub-5169620543343332/9406024729">
+    </com.google.android.gms.ads.AdView>
 </RelativeLayout>

@@ -10,18 +10,20 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.multidex.MultiDex;
+
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -32,7 +34,6 @@ import android.widget.RelativeLayout;
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.whc.winnernumber.DataBase.PriceDB;
 import com.whc.winnernumber.DataBase.WinnerDB;
-import com.whc.winnernumber.Model.PriceVO;
 import com.whc.winnernumber.R;
 
 import java.util.HashSet;
@@ -41,6 +42,14 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity {
 
     public static RelativeLayout origin;
+
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
 
 
     @Override

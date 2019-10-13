@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.whc.winnernumber">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -23,8 +25,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
+        android:theme="@style/AppTheme"
         android:resizeableActivity="false"
-        android:theme="@style/AppTheme">
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning"
+      >
         <activity
             android:name=".Control.MainActivity"
             android:label="@string/app_name"
@@ -66,9 +70,10 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <service android:name=".Control.DownloadService" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-5169620543343332~7918448977"/>
     </application>
-    <meta-data
-        android:name="com.google.android.gms.ads.APPLICATION_ID"
-        android:value="ca-app-pub-5169620543343332~7918448977"/>
+
 
 </manifest>

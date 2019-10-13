@@ -10,9 +10,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.util.Log;
 
+
+import androidx.annotation.RequiresApi;
 
 import com.whc.winnernumber.R;
 

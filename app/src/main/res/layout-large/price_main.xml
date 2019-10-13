@@ -38,14 +38,14 @@
         android:layout_alignRight="@+id/viewpagertab"
         android:layout_margin="4dp"
         />
-    <android.support.v4.view.ViewPager
+    <androidx.core.view.ViewPager
         android:id="@+id/priceViewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/viewpagertab"
         android:layout_above="@+id/adView"
         >
-    </android.support.v4.view.ViewPager>
+    </androidx.core.view.ViewPager>
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adView"
