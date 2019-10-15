@@ -17,8 +17,8 @@ android {
         applicationId "com.whc.winnernumber"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 9
-        versionName "1.26"
+        versionCode 10
+        versionName "1.27"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 

@@ -38,14 +38,14 @@
         android:layout_alignRight="@+id/viewpagertab"
         android:layout_margin="4dp"
         />
-    <androidx.core.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/priceViewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/viewpagertab"
         android:layout_above="@+id/adView"
         >
-    </androidx.core.view.ViewPager>
+    </androidx.viewpager.widget.ViewPager>
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adView"
@@ -54,6 +54,6 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-5169620543343332/3359901645"
+        ads:adUnitId="ca-app-pub-5169620543343332/9406024729"
         />
 </RelativeLayout>
