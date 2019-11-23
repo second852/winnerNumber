@@ -72,7 +72,7 @@ public final class MultiTrackerActivity extends AppCompatActivity {
     private GraphicOverlay mGraphicOverlay;
     public static AwesomeTextView answer;
     //避免重複兌獎
-    public static String oldElu,p,periodOld;
+    public static String oldElu,periodOld;
     public BootstrapButton backP;
     public AdView adView;
     public static Set<String> qrCode;
@@ -117,7 +117,6 @@ public final class MultiTrackerActivity extends AppCompatActivity {
                     MultiTrackerActivity.this.finish();
                 }
             });
-            answer.setVisibility(View.VISIBLE);
         MultiTrackerActivity.oldElu=null;
         MultiTrackerActivity.periodOld=null;
         // Check for the camera permission before accessing the camera.  If the

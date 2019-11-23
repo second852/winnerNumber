@@ -37,25 +37,18 @@
       app:fontAwesomeIcon="fa_reply_all"
       app:roundedCorners="true"
       />
+
   <com.beardedhen.androidbootstrap.AwesomeTextView
-      android:id="@+id/awardTitle"
+      android:visibility="gone"
+      android:layout_marginTop="10dp"
+      android:id="@+id/answer"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:textSize="25sp"
+      android:background="@drawable/price_button"
       android:layout_centerHorizontal="true"
-      android:layout_above="@+id/answer"
-      android:textSize="40sp"
-      app:bootstrapBrand="danger" />
-  <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:id="@+id/answer"
-      android:background="#ffffff"
-      android:textColor="#000000"
-      android:gravity="center"
-      android:textSize="40sp"
-      android:text="中獎資訊"
-      android:layout_marginBottom="20dp"
-      android:layout_above="@+id/adView"
+      android:padding="5dp"
+      app:bootstrapBrand="regular"
       />
 
   <com.google.android.gms.ads.AdView
