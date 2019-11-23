@@ -48,7 +48,7 @@ public class BootReceiverJob extends JobService {
         Log.d("BootReceiver", "BootReceiverJob");
         gson=new Gson();
         WinnerDB winnerDB=new WinnerDB(this);
-        priceDB=new PriceDB(winnerDB.getReadableDatabase());
+        priceDB=new PriceDB(winnerDB);
         new Thread(downloadData).start();
         return true;
     }

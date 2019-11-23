@@ -15,6 +15,10 @@ public class WinnerDB extends SQLiteOpenHelper {
                     "firstPrizeNo2 TEXT, firstPrizeNo3 TEXT,sixthPrizeNo1 TEXT, sixthPrizeNo2 TEXT, sixthPrizeNo3 TEXT, superPrizeAmt TEXT, spcPrizeAmt TEXT, firstPrizeAmt TEXT ,secondPrizeAmt TEXT, thirdPrizeAmt TEXT, fourthPrizeAmt TEXT, " +
                     "fifthPrizeAmt TEXT, sixthPrizeAmt TEXT, sixthPrizeNo4 TEXT, sixthPrizeNo5 TEXT, sixthPrizeNo6 TEXT);";
 
+    public static final String TYPE_CONSUMER=" CREATE TABLE Consumer ( id INTEGER PRIMARY KEY AUTOINCREMENT, maintype TEXT NOT NULL," +
+            "secondtype TEXT, money INTEGER, date Date , number TEXT , fixdate TEXT , fixdatedetail TEXT ,notify TEXT, detailname TEXT, iswin TEXT" +
+            ",auto text,autoId INTEGER, isWinNul TEXT);";
+
 
     public WinnerDB(Context context) {
         super(context, DB_NAME, null, DB_VERSION);

@@ -49,7 +49,7 @@ public class DownloadService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("service","start");
         WinnerDB winnerDB=new WinnerDB(this);
-        priceDB=new PriceDB(winnerDB.getReadableDatabase());
+        priceDB=new PriceDB(winnerDB);
         gson=new Gson();
         new Thread(downloadData).start();
         return super.onStartCommand(intent, flags, startId);

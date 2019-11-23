@@ -52,7 +52,7 @@ public class PriceNumber extends Fragment {
             this.context=getActivity();
         }
         WinnerDB winnerDB=new WinnerDB(context);
-        priceDB = new PriceDB(winnerDB.getReadableDatabase());
+        priceDB = new PriceDB(winnerDB);
     }
 
     @Nullable

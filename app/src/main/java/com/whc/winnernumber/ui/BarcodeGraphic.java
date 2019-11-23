@@ -16,26 +16,38 @@
 package com.whc.winnernumber.ui;
 
 import android.app.Activity;
+import android.app.Service;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.os.Vibrator;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
 
 
 import com.beardedhen.androidbootstrap.BootstrapText;
 import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.whc.winnernumber.Control.Common;
+import com.whc.winnernumber.DataBase.ConsumeDB;
 import com.whc.winnernumber.DataBase.PriceDB;
 import com.whc.winnernumber.DataBase.WinnerDB;
+import com.whc.winnernumber.Model.ConsumeVO;
 import com.whc.winnernumber.Model.PriceVO;
 
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 import static com.beardedhen.androidbootstrap.font.FontAwesome.FA_EXCLAMATION;
 import static com.beardedhen.androidbootstrap.font.FontAwesome.FA_FLAG;
@@ -58,25 +70,29 @@ public class BarcodeGraphic extends TrackedGraphic<Barcode> {
     private Paint mTextPaint;
     private volatile Barcode mBarcode;
     private Activity context;
-    public static HashMap<Integer, String> hashMap;
     private PriceDB priceDB;
     private String[] level = {"first", "second", "third", "fourth", "fifth", "sixth"};
     private PriceVO priceVO;
-    private HashMap<String, Integer> levellength;
-    private HashMap<String, String> levelprice;
+    private HashMap<String, Integer> levelLength;
+    private HashMap<String, String> levelPrice;
     private String EleNul, periodNow;
     private int max;
     public static String result;
-
-
+    private ConsumeDB consumeDB;
+    private ConsumeVO consumeVO;
+    public boolean isExist;
+    public String stringOne, randomNumber, period, money;
+    public int year, month, day;
+    public Calendar cTime;
 
     BarcodeGraphic(GraphicOverlay overlay, Activity context) {
         super(overlay);
-        hashMap = new HashMap<>();
         result = null;
         this.context = context;
         WinnerDB winnerDB = new WinnerDB(context);
-        priceDB = new PriceDB(winnerDB.getReadableDatabase());
+        priceDB = new PriceDB(winnerDB);
+        consumeDB = new ConsumeDB(winnerDB);
+
         String sMax = priceDB.findMaxPeriod();
         if (sMax != null) {
             max = Integer.parseInt(sMax);
@@ -91,9 +107,8 @@ public class BarcodeGraphic extends TrackedGraphic<Barcode> {
         mTextPaint = new Paint();
         mTextPaint.setColor(selectedColor);
         mTextPaint.setTextSize(36.0f);
-        levelprice = getHashLP();
-        levellength = getlevellength();
-
+        levelPrice = getHashLP();
+        levelLength = getlevellength();
     }
 
 
@@ -134,63 +149,6 @@ public class BarcodeGraphic extends TrackedGraphic<Barcode> {
             postInvalidate();
             return;
         }
-
-        String stringOne;
-        try {
-            stringOne = barcode.rawValue;
-            String nul = stringOne.substring(0, 10);
-            new Integer(nul.substring(2));
-            new Integer(stringOne.substring(10, 17));
-            stringOne.substring(45, 53);
-            stringOne.substring(17, 21);
-        } catch (Exception e) {
-            stringOne = null;
-        }
-
-        if (stringOne != null) {
-            EleNul = mBarcode.rawValue.substring(0, 10);
-            periodNow= mBarcode.rawValue.substring(10, 17);
-            if (MultiTrackerActivity.oldElu == null || (!MultiTrackerActivity.oldElu.equals(EleNul))||MultiTrackerActivity.periodOld==null||(!MultiTrackerActivity.periodOld.equals(periodNow))) {
-                MultiTrackerActivity.oldElu = EleNul;
-                MultiTrackerActivity.periodOld=periodNow;
-                MultiTrackerActivity.isold = false;
-                MultiTrackerActivity.colorChange++;
-            } else {
-                MultiTrackerActivity.isold = true;
-                postInvalidate();
-                return;
-            }
-            String day = mBarcode.rawValue.substring(10, 17);
-            int mon = Integer.parseInt(day.substring(3, 5));
-            if (mon % 2 == 1) {
-                if (mon == 11) {
-                    day = day.substring(0, 4) + "2";
-                } else if (mon == 10) {
-                    day = day.substring(0, 4) + "1";
-                } else if (mon == 9) {
-                    day = day.substring(0, 3) + "10";
-                } else {
-                    mon = mon + 1;
-                    day = day.substring(0, 4) + String.valueOf(mon);
-                }
-            } else {
-                day = day.substring(0, 5);
-            }
-            MultiTrackerActivity.p = getPeriod(day);
-            if (Integer.valueOf(day) > max) {
-
-                MultiTrackerActivity.result = "over";
-                postInvalidate();
-                return;
-            }
-            priceVO = priceDB.getPeriodAll(day);
-            if (priceVO == null) {
-                MultiTrackerActivity.result = "no";
-                postInvalidate();
-                return;
-            }
-            MultiTrackerActivity.result = anwswer(EleNul.substring(2), priceVO);
-        }
     }
 
 
@@ -203,57 +161,82 @@ public class BarcodeGraphic extends TrackedGraphic<Barcode> {
         return "N";
     }
 
-    private String anwswer(String nul, PriceVO priceVO) {
-        String threenul = nul.substring(5);
+    private List<String> answer(String nul, PriceVO priceVO) {
+        String threeNul = nul.substring(5);
         String s;
+        List<String> stringList=new ArrayList<>();
         if (nul.equals(priceVO.getSuperPrizeNo())) {
-            levelprice.put("win", priceVO.getSuperPrizeNo());
-            return "super";
+            levelPrice.put("win", priceVO.getSuperPrizeNo());
+            stringList.add("super");
+            stringList.add(priceVO.getSuperPrizeNo());
+            return stringList;
         }
         if (nul.equals(priceVO.getSpcPrizeNo())) {
-            levelprice.put("win", priceVO.getSpcPrizeNo());
-            return "spc";
+            levelPrice.put("win", priceVO.getSpcPrizeNo());
+            stringList.add("spc");
+            stringList.add(priceVO.getSpcPrizeNo());
+            return stringList;
         }
         s = firsttofourprice(nul, priceVO.getFirstPrizeNo1());
         if (!s.equals("N")) {
-            levelprice.put("win", priceVO.getFirstPrizeNo1());
-            return s;
+            levelPrice.put("win", priceVO.getFirstPrizeNo1());
+            stringList.add(s);
+            stringList.add(priceVO.getFirstPrizeNo1());
+            return stringList;
         }
         s = firsttofourprice(nul, priceVO.getFirstPrizeNo2());
         if (!s.equals("N")) {
-            levelprice.put("win", priceVO.getFirstPrizeNo2());
-            return s;
+            levelPrice.put("win", priceVO.getFirstPrizeNo2());
+            stringList.add(s);
+            stringList.add(priceVO.getFirstPrizeNo2());
+            return stringList;
         }
         s = firsttofourprice(nul, priceVO.getFirstPrizeNo3());
         if (!s.equals("N")) {
-            levelprice.put("win", priceVO.getFirstPrizeNo3());
-            return s;
+            levelPrice.put("win", priceVO.getFirstPrizeNo3());
+            stringList.add(s);
+            stringList.add(priceVO.getFirstPrizeNo3());
+            return stringList;
         }
-        if (threenul.equals(priceVO.getSixthPrizeNo1())) {
-            levelprice.put("win", priceVO.getSixthPrizeNo1());
-            return "sixth";
+        if (threeNul.equals(priceVO.getSixthPrizeNo1())) {
+            levelPrice.put("win", priceVO.getSixthPrizeNo1());
+            stringList.add("sixth");
+            stringList.add(priceVO.getSixthPrizeNo1());
+            return stringList;
         }
-        if (threenul.equals(priceVO.getSixthPrizeNo2())) {
-            levelprice.put("win", priceVO.getSixthPrizeNo2());
-            return "sixth";
+        if (threeNul.equals(priceVO.getSixthPrizeNo2())) {
+            levelPrice.put("win", priceVO.getSixthPrizeNo2());
+            stringList.add("sixth");
+            stringList.add(priceVO.getSixthPrizeNo2());
+            return stringList;
         }
-        if (threenul.equals(priceVO.getSixthPrizeNo3())) {
-            levelprice.put("win", priceVO.getSixthPrizeNo3());
-            return "sixth";
+        if (threeNul.equals(priceVO.getSixthPrizeNo3())) {
+            levelPrice.put("win", priceVO.getSixthPrizeNo3());
+            stringList.add("sixth");
+            stringList.add(priceVO.getSixthPrizeNo3());
+            return stringList;
         }
-        if (threenul.equals(priceVO.getSixthPrizeNo4())) {
-            levelprice.put("win", priceVO.getSixthPrizeNo4());
-            return "sixth";
+        if (threeNul.equals(priceVO.getSixthPrizeNo4())) {
+            levelPrice.put("win", priceVO.getSixthPrizeNo4());
+            stringList.add("sixth");
+            stringList.add(priceVO.getSixthPrizeNo4());
+            return stringList;
         }
-        if (threenul.equals(priceVO.getSixthPrizeNo5())) {
-            levelprice.put("win", priceVO.getSixthPrizeNo5());
-            return "sixth";
+        if (threeNul.equals(priceVO.getSixthPrizeNo5())) {
+            levelPrice.put("win", priceVO.getSixthPrizeNo5());
+            stringList.add("sixth");
+            stringList.add(priceVO.getSixthPrizeNo5());
+            return stringList;
         }
-        if (threenul.equals(priceVO.getSixthPrizeNo6())) {
-            levelprice.put("win", priceVO.getSixthPrizeNo6());
-            return "sixth";
+        if (threeNul.equals(priceVO.getSixthPrizeNo6())) {
+            levelPrice.put("win", priceVO.getSixthPrizeNo6());
+            stringList.add("sixth");
+            stringList.add(priceVO.getSixthPrizeNo6());
+            return stringList;
         }
-        return "N";
+        stringList.add("N");
+        stringList.add("N");
+        return stringList;
     }
 
 
@@ -263,6 +246,21 @@ public class BarcodeGraphic extends TrackedGraphic<Barcode> {
     @Override
     public void draw(Canvas canvas) {
         Barcode barcode = mBarcode;
+
+        if (barcode == null) {
+            result = null;
+            consumeVO = null;
+            MultiTrackerActivity.answer.setText(null);
+            Animation animation = MultiTrackerActivity.answer.getAnimation();
+            if (!(animation == null)) {
+                animation.cancel();
+            }
+            MultiTrackerActivity.answer.setVisibility(View.GONE);
+            Log.d("BarcodeGraphic", "NULL");
+            return;
+        }
+
+
         if (barcode != null) {
             // Draws the bounding box around the barcode.
             RectF rect = new RectF(barcode.getBoundingBox());
@@ -272,101 +270,236 @@ public class BarcodeGraphic extends TrackedGraphic<Barcode> {
             rect.bottom = translateY(rect.bottom);
             canvas.drawRect(rect, mRectPaint);
         }
-        if (MultiTrackerActivity.result == null) {
-            MultiTrackerActivity.answer.setText("請對準左邊QRCode~");
-            MultiTrackerActivity.awardTitle.setText(null);
+
+
+        if (MultiTrackerActivity.qrCode.size() >= 2) {
+            boolean qrCodeTrue = false;
+            for (String qq : MultiTrackerActivity.qrCode) {
+                if (!qq.contains("**********")) {
+                    qrCodeTrue = true;
+                }
+
+            }
+            MultiTrackerActivity.qrCode.clear();
+            if (!qrCodeTrue) {
+                MultiTrackerActivity.answer.setText("QR Code格式有誤! 請手動兌獎");
+                Common.setShowAnimation(MultiTrackerActivity.answer, 1);
+                return;
+            }
+        }
+
+        stringOne = barcode.rawValue;
+
+        if (stringOne == null || !stringOne.contains("**********")) {
             return;
         }
-        if (!MultiTrackerActivity.isold) {
-            int textColor;
-            switch (MultiTrackerActivity.colorChange%2)
-            {
-                case 0:
-                    textColor=Color.BLUE;
-                    MultiTrackerActivity.awardTitle.setBootstrapBrand(DefaultBootstrapBrand.INFO);
-                    break;
-                default:
-                    textColor=Color.parseColor("#00AA55");
-                    MultiTrackerActivity.awardTitle.setBootstrapBrand(DefaultBootstrapBrand.WARNING);
-                    break;
-            }
-            if(MultiTrackerActivity.result.equals("over"))
-            {
-                String total=MultiTrackerActivity.p+"尚未開獎\n 發票號碼 : "+MultiTrackerActivity.oldElu;
-                Spannable content = new SpannableString(total);
-                content.setSpan(new ForegroundColorSpan(textColor), total.indexOf(":")+1, total.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                MultiTrackerActivity.answer.setText(content);
 
-                MultiTrackerActivity.awardTitle.setText(null);
+        Animation animation = MultiTrackerActivity.answer.getAnimation();
+        if (!(animation == null)) {
+            if (!animation.hasEnded()) {
                 return;
             }
-            if(MultiTrackerActivity.result.equals("no"))
-            {
-                String total=MultiTrackerActivity.p+"已過兌獎期限\n 發票號碼 : " + MultiTrackerActivity.oldElu;
-                Spannable content = new SpannableString(total);
-                content.setSpan(new ForegroundColorSpan(textColor), total.indexOf(":")+1, total.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                MultiTrackerActivity.answer.setText(content);
-                MultiTrackerActivity.answer.setText(content);
+        }
 
-                MultiTrackerActivity.awardTitle.setText(null);
-                return;
+        consumeVO = null;
+        isExist = true;
+        try {
+            stringOne = barcode.rawValue;
+            String nul = stringOne.substring(0, 10);
+            Integer.valueOf(nul.substring(2));
+            Integer.valueOf(stringOne.substring(10, 17));
+            stringOne.substring(45, 53);
+            randomNumber = stringOne.substring(17, 21);
+            period = stringOne.substring(10, 17);
+            year = Integer.valueOf(period.substring(0, 3)) + 1911;
+            month = Integer.parseInt(period.substring(3, 5)) - 1;
+            day = Integer.parseInt(period.substring(5));
+            cTime = new GregorianCalendar(year, month, day);
+            money = stringOne.substring(29, 37);
+            Date iTime = new Date(cTime.getTimeInMillis());
+            consumeVO = consumeDB.findByNulAndAmountAndRd(nul, randomNumber, iTime);
+            if (consumeVO == null) {
+                consumeVO = new ConsumeVO();
+                consumeVO.setNumber(nul);
+                consumeVO.setMaintype("未知");
+                consumeVO.setSecondType("未知");
+                consumeVO.setDate(iTime);
+                consumeVO.setRdNumber(randomNumber);
+                consumeVO.setRealMoney(String.valueOf(Integer.parseInt(money, 16)));
+                consumeVO.setFixDate(String.valueOf(false));
+                consumeVO.setNotify(String.valueOf(false));
+                consumeVO.setFkKey(UUID.randomUUID().toString());
+                consumeVO.setAuto(false);
+                consumeVO.setAutoId(-1);
+                consumeVO.setIsWin("0");
+                consumeVO.setIsWinNul("0");
+                isExist = false;
+                consumeDB.insert(consumeVO);
             }
-            if (MultiTrackerActivity.result.equals("N")) {
-                String total=MultiTrackerActivity.p+"\n發票號碼:"+MultiTrackerActivity.oldElu;
-                Spannable content = new SpannableString(total);
-                content.setSpan(new ForegroundColorSpan(textColor), 0,total.indexOf("發") , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                content.setSpan(new ForegroundColorSpan(textColor), total.indexOf(":")+1, total.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                MultiTrackerActivity.answer.setText(content);
 
-                BootstrapText text = new BootstrapText.Builder(context)
-                        .addText(" " + "沒有中獎" + " ")
-                        .addFontAwesomeIcon(FA_EXCLAMATION)
-                        .addText(" " + "再接再厲" + " ")
-                        .addFontAwesomeIcon(FA_FLAG)
-                        .build();
-                MultiTrackerActivity.awardTitle.setText(text);
+        } catch (Exception e) {
+            Log.d("error", e.toString());
+            MultiTrackerActivity.answer.setText("QRCode格式有誤!\n請手動兌獎!");
+            Log.d("BarcodeGraphic", "QRCode格式有誤! 請手動兌獎");
+            consumeVO = null;
+            isExist = false;
+            Common.setShowAnimation(MultiTrackerActivity.answer, 1);
+            return;
+        }
 
 
+        if (consumeVO != null) {
+
+            StringBuilder periodString = new StringBuilder();
+            if (isExist) {
+                periodString.append("此張發票已兌獎過!\n");
+            }
+            StringBuilder sPeriod = new StringBuilder();
+            StringBuilder bPeriod = new StringBuilder();
+            sPeriod.append((year - 1911));
+            bPeriod.append((year - 1911));
+            periodString.append((year - 1911));
+
+            int realMonth = month + 1;
+            switch (realMonth) {
+                case 1:
+                case 2:
+                    sPeriod.append("02");
+                    periodString.append("年01-02月");
+                    bPeriod.append("年01-02月");
+                    break;
+                case 3:
+                case 4:
+                    sPeriod.append("04");
+                    periodString.append("年03-04月");
+                    bPeriod.append("年03-04月");
+                    break;
+                case 5:
+                case 6:
+                    sPeriod.append("06");
+                    periodString.append("年05-06月");
+                    bPeriod.append("年05-06月");
+                    break;
+                case 7:
+                case 8:
+                    sPeriod.append("08");
+                    periodString.append("年07-08月");
+                    bPeriod.append("年07-08月");
+                    break;
+                case 9:
+                case 10:
+                    sPeriod.append("10");
+                    periodString.append("年09-10月");
+                    bPeriod.append("年09-10月");
+                    break;
+                case 11:
+                case 12:
+                    sPeriod.append("12");
+                    periodString.append("年11-12月");
+                    bPeriod.append("年11-12月");
+                    break;
+            }
+
+            if (Integer.valueOf(sPeriod.toString()) > max) {
+                result = "over";
             } else {
-                if(priceVO!=null)
-                {
-                    String peroid = getPeriod(priceVO.getInvoYm());
-                    StringBuffer sb=new StringBuffer();
-                    sb.append(peroid).append(levelprice.get("win")).append("\n發票號碼").append(MultiTrackerActivity.oldElu);
-                    Spannable content = new SpannableString(sb.toString());
-                    content.setSpan(new ForegroundColorSpan(Color.RED), peroid.length()+levelprice.get("win").length()-levellength.get(MultiTrackerActivity.result),peroid.length()+levelprice.get("win").length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    content.setSpan(new ForegroundColorSpan(Color.MAGENTA), sb.length()-(levellength.get(MultiTrackerActivity.result)), sb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    MultiTrackerActivity.answer.setText(content);
-                    BootstrapText text = new BootstrapText.Builder(context)
-                            .addFontAwesomeIcon(FA_STAR)
-                            .addText(" " + levelprice.get(MultiTrackerActivity.result) + " ")
-                            .addFontAwesomeIcon(FA_STAR)
-                            .build();
-                    MultiTrackerActivity.awardTitle.setText(text);
-                    MultiTrackerActivity.awardTitle.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
+
+                priceVO = priceDB.getPeriodAll(sPeriod.toString());
+                if (priceVO == null) {
+                    result = "no";
+                } else {
+                    List<String> answer =answer(consumeVO.getNumber().substring(2), priceVO);
+                    result = answer.get(0);
+                    consumeVO.setIsWin(answer.get(0));
+                    consumeVO.setIsWinNul(answer.get(1));
                 }
             }
-        }
-    }
 
 
-    private String getPeriod(String inYm) {
-        String day = inYm.substring(3, 5);
-        String period;
-        if (day.equals("02")) {
-            period = inYm.substring(0, 3) + "年01-02月";
-        } else if (day.equals("04")) {
-            period = inYm.substring(0, 3) + "年03-04月";
-        } else if (day.equals("06")) {
-            period = inYm.substring(0, 3) + "年05-06月";
-        } else if (day.equals("08")) {
-            period = inYm.substring(0, 3) + "年07-08月";
-        } else if (day.equals("10")) {
-            period = inYm.substring(0, 3) + "年09-10月";
+
+            Spannable content;
+            int textColor = Color.BLUE;
+            int remainColor = Color.parseColor("#5bc0de");
+            switch (result) {
+                case "no":
+                    periodString.append("已過兌獎期限\n 發票號碼 : " + consumeVO.getNumber());
+                    content = new SpannableString(periodString.toString());
+                    content.setSpan(new ForegroundColorSpan(textColor), periodString.indexOf(":") + 1, periodString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    break;
+                case "over":
+                    periodString.append("尚未開獎\n 發票號碼 : " + consumeVO.getNumber());
+                    content = new BootstrapText.Builder(context)
+                            .addText(periodString.toString())
+                            .build();
+                    content.setSpan(new ForegroundColorSpan(textColor), periodString.indexOf(":") + 1, periodString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+
+                    break;
+                case "N":
+
+
+                    periodString.append("\n發票號碼:" + consumeVO.getNumber()).append("\n");
+                    content = new BootstrapText.Builder(context)
+                            .addText(periodString.toString())
+                            .addText(" " + "沒有中獎" + " ")
+                            .addFontAwesomeIcon(FA_EXCLAMATION)
+                            .addText(" " + "再接再厲" + " ")
+                            .addFontAwesomeIcon(FA_FLAG).addText(" ")
+                            .build();
+                    content.setSpan(new ForegroundColorSpan(textColor), 0, periodString.indexOf("發"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    content.setSpan(new ForegroundColorSpan(textColor), periodString.indexOf(":") + 1, periodString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+//
+                    break;
+                default:
+
+                    String winNumber = levelPrice.get("win");
+                    periodString.append(winNumber).append("\n中獎號碼").append(consumeVO.getNumber()).append("\n");
+
+                    content = new BootstrapText.Builder(context)
+                            .addText(periodString.toString())
+                            .addFontAwesomeIcon(FA_STAR)
+                            .addText(" " + levelPrice.get(result) + " ")
+                            .addFontAwesomeIcon(FA_STAR)
+                            .build();
+
+
+                    String showPrice = " " + levelPrice.get(result) + " ";
+                    String showString = content.toString();
+
+                    int priceStart = showString.indexOf(showPrice) - 1;
+                    int priceEnd = showString.length();
+
+
+                    int winNumberEnd = showString.indexOf(winNumber) + winNumber.length();
+                    int winNumberStart = winNumberEnd - levelLength.get(result);
+                    int nowNumberEnd = showString.indexOf(consumeVO.getNumber()) + consumeVO.getNumber().length();
+                    int nowNumberStart = nowNumberEnd - levelLength.get(result);
+
+                    content.setSpan(new ForegroundColorSpan(Color.RED), winNumberStart, winNumberEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    content.setSpan(new ForegroundColorSpan(Color.MAGENTA), nowNumberStart, nowNumberEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    content.setSpan(new ForegroundColorSpan(Color.RED), priceStart, priceEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                    Vibrator myVibrator = (Vibrator) this.context.getSystemService(Service.VIBRATOR_SERVICE);
+                    myVibrator.vibrate(500);
+
+
+                    break;
+            }
+
+            if (isExist) {
+                content.setSpan(new ForegroundColorSpan(remainColor), periodString.indexOf("此"), periodString.indexOf("!") + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            MultiTrackerActivity.answer.setText(content);
+            Log.d("BarcodeGraphic", mBarcode.rawValue);
+            Log.d("BarcodeGraphic", content.toString());
+            Log.d("BarcodeGraphic", result);
+            Common.setShowAnimation(MultiTrackerActivity.answer, 2);
         } else {
-            period = inYm.substring(0, 3) + "年11-12月";
+            MultiTrackerActivity.answer.setVisibility(View.GONE);
         }
-        return period;
+
     }
+
 
 }

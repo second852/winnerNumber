@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -53,6 +54,8 @@ import com.whc.winnernumber.R;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Activity for the multi-tracker app.  This app detects faces and barcodes with the rear facing
@@ -67,15 +70,13 @@ public final class MultiTrackerActivity extends AppCompatActivity {
     private CameraSource mCameraSource = null;
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
-    public static TextView answer;
-    public static String result;
+    public static AwesomeTextView answer;
     //避免重複兌獎
     public static String oldElu,p,periodOld;
-    public static boolean isold;
-    public static int colorChange;
-    public static AwesomeTextView awardTitle;
     public BootstrapButton backP;
     public AdView adView;
+    public static Set<String> qrCode;
+
     /**
      * Initializes the UI and creates the detector pipeline.
      */
@@ -97,16 +98,16 @@ public final class MultiTrackerActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+        qrCode=new HashSet<>();
         TypefaceProvider.registerDefaultIconSets();
         getSupportActionBar().hide();
         setContentView(R.layout.main);
-        adView= (AdView) findViewById(R.id.adView);
+        adView=  findViewById(R.id.adView);
         Common.setAdView(adView,this);
-        answer= (TextView) findViewById(R.id.answer);
-        awardTitle=findViewById(R.id.awardTitle);
-        mPreview = (CameraSourcePreview) findViewById(R.id.preview);
-        mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
-        backP= (BootstrapButton) findViewById(R.id.backP);
+        answer=findViewById(R.id.answer);
+        mPreview =  findViewById(R.id.preview);
+        mGraphicOverlay = findViewById(R.id.faceOverlay);
+        backP=  findViewById(R.id.backP);
             backP.setVisibility(View.VISIBLE);
             backP.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -158,7 +159,7 @@ public final class MultiTrackerActivity extends AppCompatActivity {
     private void createCameraSource() {
 
         Context context = getApplicationContext();
-        BarcodeGraphic.hashMap=new HashMap<>();
+
         // A face detector is created to track faces.  An associated multi-processor instance
         // is set to receive the face detection results, track the faces, and maintain graphics for
         // each face on screen.  The factory is used by the multi-processor to create a separate
@@ -311,7 +312,8 @@ public final class MultiTrackerActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         int result = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (result != PackageManager.PERMISSION_GRANTED) {
 
@@ -358,8 +360,8 @@ public final class MultiTrackerActivity extends AppCompatActivity {
             createCameraSource();
             Common.showToast(this,"開始QRCode掃描!");
         }
-
     }
+
     /**
      * Starts or restarts the camera source, if it exists.  If the camera source doesn't exist yet
      * (e.g., because onResume was called before the camera source was created), this will be called

@@ -61,7 +61,7 @@ public class Donwload extends Fragment {
             activity = getActivity();
         }
         WinnerDB winnerDB = new WinnerDB(activity);
-        priceDB = new PriceDB(winnerDB.getReadableDatabase());
+        priceDB = new PriceDB(winnerDB);
     }
 
     private Handler handler = new Handler(Looper.getMainLooper()) {

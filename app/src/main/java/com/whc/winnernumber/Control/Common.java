@@ -3,6 +3,8 @@ package com.whc.winnernumber.Control;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 
 import androidx.annotation.NonNull;
@@ -11,6 +13,9 @@ import androidx.core.content.ContextCompat;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -21,6 +26,7 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.whc.winnernumber.DataBase.WinnerDB;
 import com.whc.winnernumber.Model.PriceVO;
 
 
@@ -31,9 +37,11 @@ import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.sql.Date;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -74,6 +82,191 @@ public class Common {
         large,
         normal
     }
+
+    public static void insertNewTableCol(WinnerDB winnerDB) {
+        tableExist("Consumer", WinnerDB.TYPE_CONSUMER,winnerDB);
+        colExist("Consumer","rdNumber","text",winnerDB);
+        colExist("Consumer","currency","text",winnerDB);
+        colExist("Consumer","realMoney","text",winnerDB);
+        colExist("Consumer","fkKey","text",winnerDB);
+        colExist("Consumer","buyerBan","text",winnerDB);
+        colExist("Consumer","sellerName","text",winnerDB);
+        colExist("Consumer","sellerAddress","text",winnerDB);
+    }
+
+    //新增欄位
+    public static void colExist(String table,String col,String property,WinnerDB winnerDB) {
+        Cursor cursor=null;
+        SQLiteDatabase db= winnerDB.getReadableDatabase();
+        //如果有就return
+        try {
+            String sql = "SELECT sql FROM sqlite_master where name = '"+table+"' ;";
+            cursor = db.rawQuery(sql, null);
+            if (cursor.moveToNext()) {
+                String result = cursor.getString(0);
+                if (result.indexOf(col) != -1) {
+                    cursor.close();
+                    return;
+                }
+            }
+        }catch (Exception e)
+        {
+
+        }
+
+        //新增欄位
+        try {
+            String add = "ALTER TABLE '"+table+"' ADD '" + col + "' "+property+";";
+            db.execSQL(add);
+        } catch (Exception e) {
+
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    /**
+     * View渐现动画效果
+     */
+    public static void setShowAnimation(final View view, int duration)
+    {
+        if (null == view || duration < 0)
+        {
+            return;
+        }
+        AlphaAnimation mShowAnimation= (AlphaAnimation) view.getAnimation();
+        if (null != mShowAnimation)
+        {
+            mShowAnimation.cancel();
+        }
+        mShowAnimation = new AlphaAnimation(0.0f, 1.0f);
+        mShowAnimation.setDuration(duration);
+        mShowAnimation.setFillAfter(true);
+        mShowAnimation.setAnimationListener(new Animation.AnimationListener()
+        {
+
+            @Override
+            public void onAnimationStart(Animation arg0)
+            {
+                view.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation arg0)
+            {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation arg0)
+            {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                setHideAnimation(view,1);
+            }
+        });
+        view.startAnimation(mShowAnimation);
+    }
+
+    /**
+     * View渐隐动画效果
+     */
+    public static void setHideAnimation(View view, int duration)
+    {
+        if (null == view || duration < 0)
+        {
+            return;
+        }
+        AlphaAnimation mHideAnimation= (AlphaAnimation) view.getAnimation();
+        if (null != mHideAnimation)
+        {
+            mHideAnimation.cancel();
+        }
+        // 监听动画结束的操作
+        mHideAnimation = new AlphaAnimation(1.0f, 0.0f);
+        mHideAnimation.setDuration(duration);
+        mHideAnimation.setFillAfter(true);
+        mHideAnimation.setAnimationListener(new Animation.AnimationListener()
+        {
+
+            @Override
+            public void onAnimationStart(Animation arg0)
+            {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation arg0)
+            {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation arg0)
+            {
+                view.setVisibility(View.GONE);
+            }
+        });
+        view.startAnimation(mHideAnimation);
+    }
+
+    // true 相等 false 不相等
+    public static boolean checkEqualOnDay(Date dateOne, Date dateTwo)
+    {
+        Calendar a =Calendar.getInstance();
+        Calendar b=Calendar.getInstance();
+        a.setTime(dateOne);
+        b.setTime(dateTwo);
+
+        if(a.get(Calendar.YEAR)==b.get(Calendar.YEAR))
+        {
+            if(a.get(Calendar.MONTH)==b.get(Calendar.MONTH))
+            {
+                if(a.get(Calendar.DAY_OF_MONTH)==b.get(Calendar.DAY_OF_MONTH))
+                {
+                    return true;
+                }
+            }
+        }
+
+
+        return false;
+    }
+
+    //新增table
+    public static void tableExist(String table,String sql,WinnerDB winnerDB) {
+        Cursor cursor=null;
+        SQLiteDatabase db= winnerDB.getReadableDatabase();
+        //如果有就return
+        try {
+            String searchSql = "SELECT sql FROM sqlite_master where name = '"+table+"' ;";
+            cursor = db.rawQuery(searchSql, null);
+            if (cursor.moveToNext()) {
+                cursor.close();
+                return;
+            }
+        }catch (Exception e)
+        {
+
+        }
+
+        //新增table
+        try {
+            db.execSQL(sql);
+        } catch (Exception e) {
+
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
 
     public static String doubleRemoveZero(double d)
     {

@@ -3,6 +3,7 @@ package com.whc.winnernumber.Control;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -102,7 +104,7 @@ public class PriceHand extends Fragment {
             this.context = getActivity();
         }
         WinnerDB winnerDB = new WinnerDB(context);
-        priceDB = new PriceDB(winnerDB.getReadableDatabase());
+        priceDB = new PriceDB(winnerDB);
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         if (dpWidth > 650) {
@@ -369,6 +371,9 @@ public class PriceHand extends Fragment {
             content.setSpan(new ForegroundColorSpan(Color.RED), totalLength-3,  totalLength, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             awardRemain.setTextSize(mutilTextSize);
             awardRemain.setText(content);
+            Vibrator myVibrator = (Vibrator) this.context.getSystemService(Service.VIBRATOR_SERVICE);
+            myVibrator.vibrate(500);
+
             return;
         }
         //當期
@@ -397,6 +402,8 @@ public class PriceHand extends Fragment {
 
             //提示不顯示
             awardRemain.setText("");
+            Vibrator myVibrator = (Vibrator) this.context.getSystemService(Service.VIBRATOR_SERVICE);
+            myVibrator.vibrate(500);
             return;
         }
         //上期
@@ -425,6 +432,8 @@ public class PriceHand extends Fragment {
 
             //提示不顯示
             awardRemain.setText("");
+            Vibrator myVibrator = (Vibrator) this.context.getSystemService(Service.VIBRATOR_SERVICE);
+            myVibrator.vibrate(500);
             return;
         }
         //上上期

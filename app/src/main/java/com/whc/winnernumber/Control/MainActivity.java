@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
+        Common.insertNewTableCol(new WinnerDB(this));
     }
 
 
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             super.handleMessage(msg);
             getSupportActionBar().hide();
             WinnerDB winnerDB = new WinnerDB(MainActivity.this);
-            PriceDB priceDB = new PriceDB(winnerDB.getReadableDatabase());
+            PriceDB priceDB = new PriceDB(winnerDB);
             if (priceDB.getAll().size() <= 0) {
                 askPermissions();
             } else {
