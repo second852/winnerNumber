@@ -138,6 +138,8 @@ public class PriceHand extends Fragment {
             showRemain.setVisibility(View.VISIBLE);
             modelR.setVisibility(View.GONE);
             PIdateL.setVisibility(View.GONE);
+            inputNul.setVisibility(View.GONE);
+            awardRemain.setVisibility(View.GONE);
             showRemain.setText("財政部網路忙線中!\n請稍後使用!");
             return view;
         }

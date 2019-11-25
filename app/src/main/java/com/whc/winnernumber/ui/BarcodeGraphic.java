@@ -269,23 +269,32 @@ public class BarcodeGraphic extends TrackedGraphic<Barcode> {
             rect.right = translateX(rect.right);
             rect.bottom = translateY(rect.bottom);
             canvas.drawRect(rect, mRectPaint);
+
         }
 
 
         if (MultiTrackerActivity.qrCode.size() >= 2) {
-            boolean qrCodeTrue = false;
-            for (String qq : MultiTrackerActivity.qrCode) {
-                if (!qq.contains("**********")) {
-                    qrCodeTrue = true;
-                }
 
+            if(MultiTrackerActivity.qrCode.contains(barcode.rawValue))
+            {
+                boolean qrCodeTrue = false;
+                for (String qq : MultiTrackerActivity.qrCode) {
+                    if (qq.contains("**********")) {
+                        qrCodeTrue = true;
+                    }
+
+                }
+                MultiTrackerActivity.qrCode.clear();
+                if (!qrCodeTrue) {
+                    MultiTrackerActivity.answer.setText("QR Code格式有誤! 請手動兌獎");
+                    Common.setShowAnimation(MultiTrackerActivity.answer, 1);
+                    return;
+                }
+            }else{
+                MultiTrackerActivity.qrCode.clear();
             }
-            MultiTrackerActivity.qrCode.clear();
-            if (!qrCodeTrue) {
-                MultiTrackerActivity.answer.setText("QR Code格式有誤! 請手動兌獎");
-                Common.setShowAnimation(MultiTrackerActivity.answer, 1);
-                return;
-            }
+        }else {
+            MultiTrackerActivity.qrCode.add(barcode.rawValue);
         }
 
         stringOne = barcode.rawValue;
